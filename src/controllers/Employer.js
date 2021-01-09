@@ -1,20 +1,18 @@
-const express = require("express");
 var EmployerModel = require("../models/Employer");
-const router = express.Router();
 
 // get All Employers
-router.get("/", (req, resp) => {
-  EmployerModel.find({}, (err, employers) => {
+exports.getAllEmployers = (req, resp) => {
+  EmployerModel.find({}, { __v: 0 }, (err, employers) => {
     if (err) resp.status(404).send("can not get any employers " + err);
     else {
       console.log("Worked.");
       resp.status(200).send(employers);
     }
   });
-});
+};
 
 // create new Employer and add it to the DB
-router.post("/Add", (req, resp) => {
+exports.createNewEmployer = (req, resp) => {
   EmployerModel.create(
     {
       Email: req.body.Email,
@@ -32,10 +30,10 @@ router.post("/Add", (req, resp) => {
       }
     }
   );
-});
+};
 
 //Find by username and remove talent from DB
-router.delete("/:UserName", (req, resp) => {
+exports.findEmployerByUsernameAndRemove = (req, resp) => {
   EmployerModel.findOneAndDelete(
     { UserName: req.params.UserName },
     { useFindAndModify: false },
@@ -49,6 +47,4 @@ router.delete("/:UserName", (req, resp) => {
       }
     }
   );
-});
-
-module.exports = router;
+};

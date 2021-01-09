@@ -3,9 +3,11 @@ const mongoose = require("mongoose");
 
 //Using mongoose Shcema constructor to create Job Schema
 const jobSchema = new mongoose.Schema({
-  EmployerEmail: {
-    type: String,
+  EmployerID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employer",
     required: true,
+    immutable: true,
   },
   Name: {
     type: String,
@@ -78,6 +80,28 @@ const jobSchema = new mongoose.Schema({
     enum: [0, 30, 100],
 
     default: 0,
+  },
+
+  EmployerRating: {
+    type: Number,
+    enum: [0, 1, 2, 3, 4, 5],
+    default: 0,
+  },
+
+  TalentID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Talent",
+  },
+
+  TalentRating: {
+    type: Number,
+    enum: [0, 1, 2, 3, 4, 5],
+    default: 0,
+  },
+
+  Date: {
+    type: Date,
+    default: Date.now,
   },
 });
 

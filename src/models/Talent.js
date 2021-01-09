@@ -46,12 +46,12 @@ const talentSchema = new mongoose.Schema({
     English: {
       type: String,
       enum: ["Basic", "Good", "Fluent", "Native"],
-      default: "",
+      default: "Basic",
     },
     Arabic: {
       type: String,
       enum: ["Basic", "Good", "Fluent", "Native"],
-      default: "",
+      default: "Basic",
     },
   },
   HourlyRate: {

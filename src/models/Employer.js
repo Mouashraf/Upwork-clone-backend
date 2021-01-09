@@ -38,10 +38,6 @@ const employerSchema = new mongoose.Schema({
     enum: ["Egypt", "UK", "US"],
     default: "Egypt",
   },
-  // Jobs: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "Job"
-  // }]
 });
 
 // Export the Employers Schema so we can use it whenever we want

@@ -1,18 +1,16 @@
 // import Talent Model from our models folder;
-const express = require("express");
-const router = express.Router();
 const TalentModel = require("../models/talent");
 
 // get All Talents
-router.get("/", (req, resp) => {
-  TalentModel.find({}, (err, talents) => {
+exports.getAllTalents = (req, resp) => {
+  TalentModel.find({}, { __v: 0 }, (err, talents) => {
     if (err) resp.status(404).send("can not get any talents " + err);
     resp.status(200).send(talents);
   });
-});
+};
 
 // create new Talent and add it to the DB
-router.post("/Add", (req, resp) => {
+exports.createNewTalent = (req, resp) => {
   TalentModel.create(
     {
       Email: req.body.Email,
@@ -37,10 +35,10 @@ router.post("/Add", (req, resp) => {
       resp.status(200).send(talent);
     }
   );
-});
+};
 
 //Find by username and remove talent from DB
-router.delete("/:UserName", (req, resp) => {
+exports.findTalentByUsernameAndDelete = (req, resp) => {
   TalentModel.findOneAndDelete(
     { UserName: req.params.UserName },
     { useFindAndModify: false },
@@ -54,6 +52,4 @@ router.delete("/:UserName", (req, resp) => {
       }
     }
   );
-});
-
-module.exports = router;
+};

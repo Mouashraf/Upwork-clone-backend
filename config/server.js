@@ -2,11 +2,11 @@ import express from "express";
 import bodyParser from "body-parser";
 const server = express();
 
-const employerRoutes = require("../src/controllers/Employer");
-const talentRoutes = require("../src/controllers/Talent");
-const jobRoutes = require("../src/controllers/Job");
-
 server.use(bodyParser.json());
+
+const employerRoutes = require("../src/routes/Employer");
+const talentRoutes = require("../src/routes/Talent");
+const jobRoutes = require("../src/routes/Job");
 
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
