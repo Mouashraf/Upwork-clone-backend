@@ -42,11 +42,11 @@ router.post("/Add", (req, resp) => {
 //Find by username and remove talent from DB
 router.delete("/:UserName", (req, resp) => {
   TalentModel.findOneAndDelete(
-    req.params.UserName,
+    { UserName: req.params.UserName },
     { useFindAndModify: false },
     (err, talent) => {
-      if (err) {
-        resp.status(500).send("Username is not correct!");
+      if (err || !talent) {
+        resp.status(404).send("Username is not correct!");
       } else {
         resp
           .status(200)

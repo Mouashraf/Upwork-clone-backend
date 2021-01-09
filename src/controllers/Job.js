@@ -54,7 +54,7 @@ router.delete("/:id", (req, resp) => {
       } else {
         resp
           .status(200)
-          .send("Job number " + req.params.id + " is deleted Successfully");
+          .send(`Job number ${req.params.id} is deleted Successfully`);
       }
     }
   );
