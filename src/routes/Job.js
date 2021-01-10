@@ -12,6 +12,6 @@ router.get("/:id", JobController.getAJobById);
 router.post("/Add", JobController.createNewJob);
 
 //Find job by username and remove from DB
-router.delete("/:id", JobController.findJobByUsernameAndRemove);
+router.delete("/:id", JobController.findJobByIDAndRemove);
 
 module.exports = router;

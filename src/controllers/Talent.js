@@ -3,10 +3,39 @@ const TalentModel = require("../models/talent");
 
 // get All Talents
 exports.getAllTalents = (req, resp) => {
-  TalentModel.find({}, { __v: 0 }, (err, talents) => {
+  TalentModel.find({}, { __v: 0 }, (err, data) => {
     if (err) resp.status(404).send("can not get any talents " + err);
-    resp.status(200).send(talents);
+    else {
+      const talentsCount = data.length;
+      resp.status(200).send({
+        talentsCount,
+        talents: data.map((data) => {
+          return {
+            data,
+            request: {
+              type: "GET",
+              url: "http://localhost:5000/talent/" + data.UserName,
+            },
+          };
+        }),
+      });
+    }
   });
+};
+
+//Get a talent by username
+exports.getATalentByUsername = (req, resp) => {
+  TalentModel.findOne(
+    { UserName: req.params.UserName },
+    { __v: 0 },
+    (err, data) => {
+      if (err || !data) {
+        resp.status(404).send("Wrong username entered");
+      } else {
+        resp.status(200).send(data);
+      }
+    }
+  );
 };
 
 // create new Talent and add it to the DB

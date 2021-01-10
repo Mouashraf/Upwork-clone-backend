@@ -7,7 +7,7 @@ exports.getAllJobs = (req, resp) => {
     if (err) resp.status(404).send("Can't get jobs " + err);
     else {
       const jobsCount = data.length;
-      console.log("Worked.");
+      // console.log("Worked.");
       resp.status(200).send({
         jobsCount,
         jobs: data.map((data) => {
@@ -69,8 +69,8 @@ exports.createNewJob = (req, resp) => {
   });
 };
 
-//Find by username and remove talent from DB
-exports.findJobByUsernameAndRemove = (req, resp) => {
+//Find by ID and remove job from DB
+exports.findJobByIDAndRemove = (req, resp) => {
   JobModel.findByIdAndRemove(
     req.params.id,
     { useFindAndModify: false },

@@ -5,6 +5,9 @@ const EmployerController = require("../controllers/Employer");
 // get All Employers
 router.get("/", EmployerController.getAllEmployers);
 
+//Get an employer by username
+router.get("/:UserName", EmployerController.getAnEmployerByUsername);
+
 // create new Employer and add it to the DB
 router.post("/Add", EmployerController.createNewEmployer);
 

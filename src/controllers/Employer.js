@@ -2,13 +2,39 @@ var EmployerModel = require("../models/Employer");
 
 // get All Employers
 exports.getAllEmployers = (req, resp) => {
-  EmployerModel.find({}, { __v: 0 }, (err, employers) => {
+  EmployerModel.find({}, { __v: 0 }, (err, data) => {
     if (err) resp.status(404).send("can not get any employers " + err);
     else {
-      console.log("Worked.");
-      resp.status(200).send(employers);
+      const employersCount = data.length;
+      resp.status(200).send({
+        employersCount,
+        Employers: data.map((data) => {
+          return {
+            data,
+            request: {
+              type: "GET",
+              url: "http://localhost:5000/employer/" + data.UserName,
+            },
+          };
+        }),
+      });
     }
   });
+};
+
+//Get an employer by username
+exports.getAnEmployerByUsername = (req, resp) => {
+  EmployerModel.findOne(
+    { UserName: req.params.UserName },
+    { __v: 0 },
+    (err, data) => {
+      if (err || !data) {
+        resp.status(404).send("Wrong username entered");
+      } else {
+        resp.status(200).send(data);
+      }
+    }
+  );
 };
 
 // create new Employer and add it to the DB
