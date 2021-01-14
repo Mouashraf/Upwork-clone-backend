@@ -9,7 +9,7 @@ router.get("/", JobController.getAllJobs);
 router.get("/:id", JobController.getAJobById);
 
 // create new job and add it to the DB
-router.post("/Add", JobController.createNewJob);
+router.post("/Add/:EmployerID", JobController.createNewJob);
 
 //Find job by username and remove from DB
 router.delete("/:id", JobController.findJobByIDAndRemove);

@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 const server = express();
 
+server.use("/uploads", express.static("uploads"));
 server.use(bodyParser.json());
 
 const employerRoutes = require("../src/routes/Employer");

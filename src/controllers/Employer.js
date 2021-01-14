@@ -1,9 +1,13 @@
 var EmployerModel = require("../models/Employer");
+const authenticateLogin = require("../services/Authentication")
+  .authenticateLogin;
+const authenticateAndEncryptPassword = require("../services/Authentication")
+  .authenticateAndEncryptPassword;
 
 // get All Employers
 exports.getAllEmployers = (req, resp) => {
   EmployerModel.find({}, { __v: 0 }, (err, data) => {
-    if (err) resp.status(404).send("can not get any employers " + err);
+    if (err) resp.status(404).json({ message: "can not get any employers " });
     else {
       const employersCount = data.length;
       resp.status(200).send({
@@ -29,7 +33,7 @@ exports.getAnEmployerByUsername = (req, resp) => {
     { __v: 0 },
     (err, data) => {
       if (err || !data) {
-        resp.status(404).send("Wrong username entered");
+        resp.status(404).json({ message: "Wrong username entered" });
       } else {
         resp.status(200).send(data);
       }
@@ -39,20 +43,34 @@ exports.getAnEmployerByUsername = (req, resp) => {
 
 // create new Employer and add it to the DB
 exports.createNewEmployer = (req, resp) => {
-  EmployerModel.create(
+  console.log(req.body.Email);
+  EmployerModel.findOne(
     {
-      Email: req.body.Email,
-      UserName: req.body.UserName,
-      FirstName: req.body.FirstName,
-      LastName: req.body.LastName,
-      Password: req.body.Password,
-      ImageURL: req.body.ImageURL,
-      Country: req.body.Country,
+      $or: [{ Email: req.body.Email }, { UserName: req.body.UserName }],
     },
-    (err, employer) => {
-      if (err) resp.status(404).send("One of your fields is wrong " + err);
-      if (!err) {
-        resp.status(200).send(employer);
+    (err, user) => {
+      const hashedPassword = authenticateAndEncryptPassword(user, req, resp);
+      if (typeof hashedPassword == "string") {
+        EmployerModel.create(
+          {
+            Email: req.body.Email,
+            UserName: req.body.UserName,
+            FirstName: req.body.FirstName,
+            LastName: req.body.LastName,
+            Password: hashedPassword,
+            ImageURL: req.body.ImageURL
+              ? req.file.path
+              : "https://www.djelfa.info/mobi/img/avatar/avatar.png",
+            Country: req.body.Country,
+          },
+          (err, employer) => {
+            if (err)
+              resp.status(404).send("One of your fields is wrong " + err);
+            if (!err) {
+              resp.status(200).send(employer);
+            }
+          }
+        );
       }
     }
   );
@@ -63,14 +81,21 @@ exports.findEmployerByUsernameAndRemove = (req, resp) => {
   EmployerModel.findOneAndDelete(
     { UserName: req.params.UserName },
     { useFindAndModify: false },
-    (err, talent) => {
-      if (err || !talent) {
-        resp.status(404).send("Username is incorrect");
+    (err, data) => {
+      if (err || !data) {
+        resp.status(404).json({
+          message: "Username is not correct!",
+        });
       } else {
-        resp
-          .status(200)
-          .send("Employer " + req.params.UserName + " is deleted Successfully");
+        resp.status(200).json({
+          message: "User deleted successfully",
+        });
       }
     }
   );
+};
+
+//Login Authentication for the talent
+exports.authenticateLogin = (req, resp) => {
+  authenticateLogin(EmployerModel, req, resp);
 };

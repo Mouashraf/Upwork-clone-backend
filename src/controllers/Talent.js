@@ -1,5 +1,10 @@
 // import Talent Model from our models folder;
+const fs = require("fs");
 const TalentModel = require("../models/talent");
+const authenticateLogin = require("../services/Authentication")
+  .authenticateLogin;
+const authenticateAndEncryptPassword = require("../services/Authentication")
+  .authenticateAndEncryptPassword;
 
 // get All Talents
 exports.getAllTalents = (req, resp) => {
@@ -30,7 +35,7 @@ exports.getATalentByUsername = (req, resp) => {
     { __v: 0 },
     (err, data) => {
       if (err || !data) {
-        resp.status(404).send("Wrong username entered");
+        resp.status(404).json({ message: "Wrong username entered" });
       } else {
         resp.status(200).send(data);
       }
@@ -40,28 +45,49 @@ exports.getATalentByUsername = (req, resp) => {
 
 // create new Talent and add it to the DB
 exports.createNewTalent = (req, resp) => {
-  TalentModel.create(
+  console.log(req.body.Password);
+
+  TalentModel.findOne(
     {
-      Email: req.body.Email,
-      UserName: req.body.UserName,
-      FirstName: req.body.FirstName,
-      LastName: req.body.LastName,
-      Password: req.body.Password,
-      MainService: req.body.MainService,
-      Skills: req.body.Skills,
-      ExpertiseLevel: req.body.ExpertiseLevel,
-      Languages: req.body.Languages,
-      HourlyRate: req.body.HourlyRate,
-      Title: req.body.Title,
-      ProfessionalOverview: req.body.ProfessionalOverview,
-      ImageURL: req.body.ImageURL,
-      Country: req.body.Country,
-      PhoneNumber: req.body.PhoneNumber,
-      Availability: req.body.Availability,
+      $or: [
+        { Email: req.body.Email },
+        { UserName: req.body.UserName },
+        { PhoneNumber: req.body.PhoneNumber },
+      ],
     },
-    (err, talent) => {
-      if (err) resp.status(500).send("can not create new talent: " + err);
-      resp.status(200).send(talent);
+    (err, user) => {
+      const hashedPassword = authenticateAndEncryptPassword(user, req, resp);
+      if (typeof hashedPassword == "string") {
+        TalentModel.create(
+          {
+            Email: req.body.Email,
+            UserName: req.body.UserName,
+            FirstName: req.body.FirstName,
+            LastName: req.body.LastName,
+            Password: hashedPassword,
+            MainService: req.body.MainService,
+            Skills: req.body.Skills,
+            ExpertiseLevel: req.body.ExpertiseLevel,
+            Languages: req.body.Languages,
+            HourlyRate: req.body.HourlyRate,
+            Title: req.body.Title,
+            ProfessionalOverview: req.body.ProfessionalOverview,
+            ImageURL: !req.file
+              ? "https://www.djelfa.info/mobi/img/avatar/avatar.png"
+              : req.file.path,
+            Country: req.body.Country,
+            PhoneNumber: req.body.PhoneNumber,
+            Availability: req.body.Availability,
+          },
+          (err, talent) => {
+            if (err)
+              resp.status(500).json({
+                message: "One or more fields isn't valid" + err,
+              });
+            resp.status(200).send(talent);
+          }
+        );
+      }
     }
   );
 };
@@ -73,12 +99,19 @@ exports.findTalentByUsernameAndDelete = (req, resp) => {
     { useFindAndModify: false },
     (err, talent) => {
       if (err || !talent) {
-        resp.status(404).send("Username is not correct!");
+        resp.status(404).json({
+          message: "Username is not correct!",
+        });
       } else {
-        resp
-          .status(200)
-          .send("Talent " + req.params.UserName + " is deleted Successfully");
+        resp.status(200).json({
+          message: "User deleted successfully",
+        });
       }
     }
   );
+};
+
+//Login Authentication for the talent
+exports.authenticateLogin = (req, resp) => {
+  authenticateLogin(TalentModel, req, resp);
 };
