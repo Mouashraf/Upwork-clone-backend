@@ -38,7 +38,43 @@ const employerSchema = new mongoose.Schema({
     enum: ["Egypt", "UK", "US"],
     default: "Egypt",
   },
+	Jobs: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Job",
+			required: true
+		}]
 });
+
+
+// Add Method into Employer Schema to add new job
+employerSchema.methods.addToJobs = function(job) {
+
+	const updatedJobsList = [...this.Jobs];
+
+	updatedJobsList.push(job._id)
+
+	// const updatedJobs = {
+	// 	list: updatedJobsList
+	// };
+
+	this.Jobs = updatedJobsList;
+
+	return this.save();
+};
+
+
+// Add Method into Employer Schema to remove a job
+employerSchema.methods.removeFromJobs = function(jobID) {
+    const updatedlist = this.Jobs.list.filter(item => {
+        return item.toString() !== jobID.toString();
+	});
+	
+	this.Jobs.list = updatedlist;
+	
+    return this.save();
+};
+
 
 // Export the Employers Schema so we can use it whenever we want
 module.exports = mongoose.model("Employer", employerSchema);

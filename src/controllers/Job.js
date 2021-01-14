@@ -56,16 +56,41 @@ exports.createNewJob = (req, resp) => {
       isFixedPrice: req.body.isFixedPrice,
       Duration: req.body.Duration,
       WeeklyHoursRequired: req.body.WeeklyHoursRequired,
+      EmployerRating: req.body.EmployerRating,
+      EmployerReview: req.body.EmployerReview,
+      TalentID: req.body.TalentID,
+      TalentRating: req.body.TalentRating,
+      TalentReview: req.body.TalentReview,
+      Proposals: req.body.Proposals,
+      ConnectsNeeded: req.body.ConnectsNeeded,
+      Status: req.body.Status
     },
-    (err, employer) => {
+    (err, job) => {
       if (err)
         resp.status(404).json({ message: "One of your fields is wrong " });
       if (!err) {
-        resp.status(200).send(employer);
+        job.EmployerID.addToJobs(job);
+        resp.status(200).send(job);
       }
     }
   );
 };
+
+//Find job by ID and edit 
+exports.findJobByIDAndUpdate = (req, resp) => {
+	JobModel.findByIdAndUpdate(
+		req.params.id, {
+			$set: req.body
+		},
+		(err, job) => {
+			if (err) resp.status(404).send("Please be sure you're updating an existing job " + err);
+			if (!err) {
+				resp.status(200).send(job);
+			}
+		}
+	)
+}
+
 
 //Find by ID and remove job from DB
 exports.findJobByIDAndRemove = (req, resp) => {
@@ -78,6 +103,7 @@ exports.findJobByIDAndRemove = (req, resp) => {
           message: "Job ID is not correct!",
         });
       } else {
+        data.EmployerID.removeFromJobs(data._id);
         resp.status(200).json({
           message: "Job deleted successfully",
         });

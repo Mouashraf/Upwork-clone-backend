@@ -13,6 +13,12 @@ router.get("/:UserName", EmployerController.getAnEmployerByUsername);
 // create new Employer and add it to the DB
 router.post("/Add", Service.uploadImg, EmployerController.createNewEmployer);
 
+//Find Employer by username and Edit it
+router.patch("/:UserName", EmployerController.findEmployerByUsernameAndUpdate);
+
+//Find Employer jobs by username
+router.get("/:UserName/jobs", EmployerController.findAllEmployerJobsByUsername);
+
 // Find Employer by username and remove from DB
 router.delete("/:UserName", EmployerController.findEmployerByUsernameAndRemove);
 

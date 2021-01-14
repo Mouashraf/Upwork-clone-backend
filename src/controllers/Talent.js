@@ -1,6 +1,6 @@
 // import Talent Model from our models folder;
 const fs = require("fs");
-const TalentModel = require("../models/talent");
+const TalentModel = require("../models/Talent");
 const authenticateLogin = require("../services/Authentication")
   .authenticateLogin;
 const authenticateAndEncryptPassword = require("../services/Authentication")
@@ -78,6 +78,7 @@ exports.createNewTalent = (req, resp) => {
             Country: req.body.Country,
             PhoneNumber: req.body.PhoneNumber,
             Availability: req.body.Availability,
+            Connects: req.body.Connects
           },
           (err, talent) => {
             if (err)
@@ -91,6 +92,21 @@ exports.createNewTalent = (req, resp) => {
     }
   );
 };
+
+//Find Talent by username and edit it
+exports.findTalentByUsernameAndUpdate = (req, resp) => {
+	TalentModel.findOneAndUpdate(
+		{ UserName: req.params.UserName }, {
+			$set: req.body
+		},
+		(err, job) => {
+			if (err) resp.status(404).send("Please be sure you're updating an existing talent " + err);
+			if (!err) {
+				resp.status(200).send(job);
+			}
+		}
+	)
+}
 
 //Find by username and remove talent from DB
 exports.findTalentByUsernameAndDelete = (req, resp) => {

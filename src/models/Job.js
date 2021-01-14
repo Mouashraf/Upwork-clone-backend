@@ -7,7 +7,7 @@ const jobSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employer",
     required: true,
-    immutable: true,
+    immutable: true
   },
   Name: {
     type: String,
@@ -81,28 +81,47 @@ const jobSchema = new mongoose.Schema({
 
     default: 0,
   },
-
   EmployerRating: {
     type: Number,
     enum: [0, 1, 2, 3, 4, 5],
-    default: 0,
-  },
+    immutable: true
 
+  },
+  EmployerReview: {
+    type: String,
+    immutable: true
+  },
   TalentID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Talent",
   },
-
   TalentRating: {
     type: Number,
     enum: [0, 1, 2, 3, 4, 5],
-    default: 0,
+    immutable: true
   },
-
-  Date: {
-    type: Date,
-    default: Date.now,
+  TalentReview: {
+    type: String,
+    immutable: true
   },
+  Proposals: {
+    list: [{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Talent",
+			required: true
+		}]
+  },
+  ConnectsNeeded: {
+    type: Number,
+    default: 3
+  },
+  Status: {
+    type: String,
+    enum: ["Pending", "Ongiong", "Done"],
+    default: "Pending"
+  }
+}, {
+  timestamps: true
 });
 
 // Export the Jobs Schema so we can use it whenever we want

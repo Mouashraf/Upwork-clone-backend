@@ -11,6 +11,9 @@ router.get("/:id", JobController.getAJobById);
 // create new job and add it to the DB
 router.post("/Add/:EmployerID", JobController.createNewJob);
 
+//Find job by ID and Edit it
+router.patch("/:id", JobController.findJobByIDAndUpdate);
+
 //Find job by username and remove from DB
 router.delete("/:id", JobController.findJobByIDAndRemove);
 

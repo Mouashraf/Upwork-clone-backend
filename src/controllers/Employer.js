@@ -65,7 +65,7 @@ exports.createNewEmployer = (req, resp) => {
           },
           (err, employer) => {
             if (err)
-              resp.status(404).send("One of your fields is wrong " + err);
+              resp.status(404).json({ message:"One of your fields is wrong " + err});
             if (!err) {
               resp.status(200).send(employer);
             }
@@ -75,6 +75,36 @@ exports.createNewEmployer = (req, resp) => {
     }
   );
 };
+
+exports.findEmployerByUsernameAndUpdate = (req, resp) => {
+  EmployerModel.findOneAndUpdate({
+      UserName: req.params.UserName
+    }, {
+      $set: req.body
+    },
+    (err, job) => {
+      if (err) resp.status(404).json({ message:"Please be sure you're updating an existing employer " + err});
+      if (!err) {
+        resp.status(200).send(job);
+      }
+    }
+  )
+}
+
+//Find all Employer jobs using username
+exports.findAllEmployerJobsByUsername = async (req, res) => {
+  EmployerModel.findOne({
+      UserName: req.params.UserName
+    })
+    .populate('Jobs')
+    .exec((err, EmployerJobs) => {
+      if (err) res.status(404).send("Please be sure you're updating an existing employer " + err);
+      if (!err) {
+        res.status(200).send(EmployerJobs.Jobs);
+      }
+    });
+}
+
 
 //Find by username and remove talent from DB
 exports.findEmployerByUsernameAndRemove = (req, resp) => {
