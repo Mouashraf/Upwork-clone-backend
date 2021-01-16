@@ -64,11 +64,11 @@ employerSchema.methods.addToJobs = function (job) {
 
 // Add Method into Employer Schema to remove a job
 employerSchema.methods.removeFromJobs = function (jobID) {
-  const updatedlist = this.Jobs.list.filter((item) => {
+  const updatedlist = this.Jobs.filter((item) => {
     return item.toString() !== jobID.toString();
   });
 
-  this.Jobs.list = updatedlist;
+  this.Jobs = updatedlist;
 
   return this.save();
 };

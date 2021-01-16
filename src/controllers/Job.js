@@ -69,7 +69,9 @@ exports.createNewJob = (req, resp) => {
       if (err)
         resp.status(404).json({ message: "One of your fields is wrong " });
       if (!err) {
-        job.EmployerID.addToJobs(job);
+        EmployerModel.findById(job.EmployerID).then((employer) => {
+          employer.addToJobs(job);
+        });
         resp.status(200).send(job);
       }
     }
@@ -106,7 +108,9 @@ exports.findJobByIDAndRemove = (req, resp) => {
           message: "Job ID is not correct!",
         });
       } else {
-        data.EmployerID.removeFromJobs(data._id);
+        EmployerModel.findById(data.EmployerID).then((employer) => {
+          employer.removeFromJobs(data._id);
+        });
         resp.status(200).json({
           message: "Job deleted successfully",
         });

@@ -78,6 +78,7 @@ exports.createNewEmployer = (req, resp) => {
   );
 };
 
+//Edit an Employer using username
 exports.findEmployerByUsernameAndUpdate = (req, resp) => {
   EmployerModel.findOneAndUpdate(
     {
@@ -105,10 +106,7 @@ exports.findAllEmployerJobsByUsername = async (req, res) => {
   })
     .populate("Jobs")
     .exec((err, EmployerJobs) => {
-      if (err)
-        res
-          .status(404)
-          .send("Please be sure you're updating an existing employer " + err);
+      if (err) res.status(404).json({ message:"Please be sure you entered an existing employer username" + err});
       if (!err) {
         res.status(200).send(EmployerJobs.Jobs);
       }
