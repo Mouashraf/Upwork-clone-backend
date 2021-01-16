@@ -1,9 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+
 const server = express();
 
 server.use("/uploads", express.static("uploads"));
 server.use(bodyParser.json());
+server.use(cookieParser());
 
 const employerRoutes = require("../src/routes/Employer");
 const talentRoutes = require("../src/routes/Talent");

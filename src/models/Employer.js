@@ -38,43 +38,40 @@ const employerSchema = new mongoose.Schema({
     enum: ["Egypt", "UK", "US"],
     default: "Egypt",
   },
-	Jobs: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Job",
-			required: true
-		}]
+  Jobs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Job",
+      required: true,
+    },
+  ],
 });
 
-
 // Add Method into Employer Schema to add new job
-employerSchema.methods.addToJobs = function(job) {
+employerSchema.methods.addToJobs = function (job) {
+  const updatedJobsList = [...this.Jobs];
 
-	const updatedJobsList = [...this.Jobs];
+  updatedJobsList.push(job._id);
 
-	updatedJobsList.push(job._id)
+  // const updatedJobs = {
+  // 	list: updatedJobsList
+  // };
 
-	// const updatedJobs = {
-	// 	list: updatedJobsList
-	// };
+  this.Jobs = updatedJobsList;
 
-	this.Jobs = updatedJobsList;
-
-	return this.save();
+  return this.save();
 };
-
 
 // Add Method into Employer Schema to remove a job
-employerSchema.methods.removeFromJobs = function(jobID) {
-    const updatedlist = this.Jobs.filter(item => {
-        return item.toString() !== jobID.toString();
-	});
-	
-	this.Jobs = updatedlist;
-	
-    return this.save();
-};
+employerSchema.methods.removeFromJobs = function (jobID) {
+  const updatedlist = this.Jobs.filter((item) => {
+    return item.toString() !== jobID.toString();
+  });
 
+  this.Jobs = updatedlist;
+
+  return this.save();
+};
 
 // Export the Employers Schema so we can use it whenever we want
 module.exports = mongoose.model("Employer", employerSchema);

@@ -94,47 +94,44 @@ const talentSchema = new mongoose.Schema({
 
     default: 0,
   },
-	Jobs: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Job",
-			required: true
-		}],
+  Jobs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Job",
+      required: true,
+    },
+  ],
   Connects: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 });
 
-
 // Add Method into Talent Schema to add new job
-talentSchema.methods.addToJobs = function(job) {
+talentSchema.methods.addToJobs = function (job) {
+  const updatedJobsList = [...this.Jobs];
 
-	const updatedJobsList = [...this.Jobs];
+  updatedJobsList.push(job._id);
 
-	updatedJobsList.push(job._id)
+  // const updatedJobs = {
+  // 	list: updatedJobsList
+  // };
 
-	// const updatedJobs = {
-	// 	list: updatedJobsList
-	// };
+  this.Jobs = updatedJobsList;
 
-	this.Jobs = updatedJobsList;
-
-	return this.save();
+  return this.save();
 };
-
 
 // Add Method into Talent Schema to remove a job
-talentSchema.methods.removeFromJobs = function(jobID) {
-    const updatedlist = this.Jobs.filter(item => {
-        return item.toString() !== jobID.toString();
-	});
-	
-	this.Jobs = updatedlist;
-	
-    return this.save();
-};
+talentSchema.methods.removeFromJobs = function (jobID) {
+  const updatedlist = this.Jobs.filter((item) => {
+    return item.toString() !== jobID.toString();
+  });
 
+  this.Jobs = updatedlist;
+
+  return this.save();
+};
 
 // Export the Talents Schema so we can use it whenever we want
 module.exports = mongoose.model("Talent", talentSchema);

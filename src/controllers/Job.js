@@ -63,7 +63,7 @@ exports.createNewJob = (req, resp) => {
       TalentReview: req.body.TalentReview,
       Proposals: req.body.Proposals,
       ConnectsNeeded: req.body.ConnectsNeeded,
-      Status: req.body.Status
+      Status: req.body.Status,
     },
     (err, job) => {
       if (err)
@@ -78,21 +78,24 @@ exports.createNewJob = (req, resp) => {
   );
 };
 
-//Find job by ID and edit 
+//Find job by ID and edit
 exports.findJobByIDAndUpdate = (req, resp) => {
-	JobModel.findByIdAndUpdate(
-		req.params.id, {
-			$set: req.body
-		},
-		(err, job) => {
-			if (err) resp.status(404).send("Please be sure you're updating an existing job " + err);
-			if (!err) {
-				resp.status(200).send(job);
-			}
-		}
-	)
-}
-
+  JobModel.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: req.body,
+    },
+    (err, job) => {
+      if (err)
+        resp
+          .status(404)
+          .send("Please be sure you're updating an existing job " + err);
+      if (!err) {
+        resp.status(200).send(job);
+      }
+    }
+  );
+};
 
 //Find by ID and remove job from DB
 exports.findJobByIDAndRemove = (req, resp) => {

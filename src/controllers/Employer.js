@@ -43,7 +43,7 @@ exports.getAnEmployerByUsername = (req, resp) => {
 
 // create new Employer and add it to the DB
 exports.createNewEmployer = (req, resp) => {
-  console.log(req.body.Email);
+  // console.log(req.body.Email);
   EmployerModel.findOne(
     {
       $or: [{ Email: req.body.Email }, { UserName: req.body.UserName }],
@@ -65,7 +65,9 @@ exports.createNewEmployer = (req, resp) => {
           },
           (err, employer) => {
             if (err)
-              resp.status(404).json({ message:"One of your fields is wrong " + err});
+              resp
+                .status(404)
+                .json({ message: "One of your fields is wrong " + err });
             if (!err) {
               resp.status(200).send(employer);
             }
@@ -78,34 +80,38 @@ exports.createNewEmployer = (req, resp) => {
 
 //Edit an Employer using username
 exports.findEmployerByUsernameAndUpdate = (req, resp) => {
-  EmployerModel.findOneAndUpdate({
-      UserName: req.params.UserName
-    }, {
-      $set: req.body
+  EmployerModel.findOneAndUpdate(
+    {
+      UserName: req.params.UserName,
+    },
+    {
+      $set: req.body,
     },
     (err, job) => {
-      if (err) resp.status(404).json({ message:"Please be sure you're updating an existing employer " + err});
+      if (err)
+        resp.status(404).json({
+          message: "Please be sure you're updating an existing employer " + err,
+        });
       if (!err) {
         resp.status(200).send(job);
       }
     }
-  )
-}
+  );
+};
 
 //Find all Employer jobs using username
 exports.findAllEmployerJobsByUsername = async (req, res) => {
   EmployerModel.findOne({
-      UserName: req.params.UserName
-    })
-    .populate('Jobs')
+    UserName: req.params.UserName,
+  })
+    .populate("Jobs")
     .exec((err, EmployerJobs) => {
       if (err) res.status(404).json({ message:"Please be sure you entered an existing employer username" + err});
       if (!err) {
         res.status(200).send(EmployerJobs.Jobs);
       }
     });
-}
-
+};
 
 //Find by username and remove talent from DB
 exports.findEmployerByUsernameAndRemove = (req, resp) => {
@@ -129,4 +135,12 @@ exports.findEmployerByUsernameAndRemove = (req, resp) => {
 //Login Authentication for the talent
 exports.authenticateLogin = (req, resp) => {
   authenticateLogin(EmployerModel, req, resp);
+};
+
+//Logout for employer
+exports.logout = (req, resp) => {
+  resp.cookie("jwt", "", { maxAge: 1 });
+  resp.status(200).json({
+    message: "Logged out successfully",
+  });
 };
