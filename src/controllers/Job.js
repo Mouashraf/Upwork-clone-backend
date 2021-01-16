@@ -3,8 +3,12 @@ const EmployerModel = require("../models/Employer");
 
 // get All Jobs
 exports.getAllJobs = (req, resp) => {
-  JobModel.find({}, { __v: 0 }, (err, data) => {
-    if (err) resp.status(404).json({ message: "Can't get the jobs " });
+  JobModel.find({}, {
+    __v: 0
+  }, (err, data) => {
+    if (err) resp.status(404).json({
+      message: "Can't get the jobs "
+    });
     else {
       const jobsCount = data.length;
       // console.log("Worked.");
@@ -26,9 +30,13 @@ exports.getAllJobs = (req, resp) => {
 
 //Get a job by ID
 exports.getAJobById = (req, resp) => {
-  JobModel.findById(req.params.jobID, { __v: 0 }, (err, data) => {
+  JobModel.findById(req.params.jobID, {
+    __v: 0
+  }, (err, data) => {
     if (err || !data) {
-      resp.status(404).json({ message: "Wrong ID entered" });
+      resp.status(404).json({
+        message: "Wrong ID entered"
+      });
     } else {
       resp.status(200).send(data);
     }
@@ -39,9 +47,8 @@ exports.getAJobById = (req, resp) => {
 exports.createNewJob = (req, resp) => {
   // Add Employer ID
 
-  JobModel.create(
-    {
-      EmployerID: req.params.EmployerID,
+  JobModel.create({
+      EmployerUserName: req.params.UserName,
       Name: req.body.Name,
       Category: req.body.Category,
       Description: req.body.Description,
@@ -67,9 +74,13 @@ exports.createNewJob = (req, resp) => {
     },
     (err, job) => {
       if (err)
-        resp.status(404).json({ message: "One of your fields is wrong " });
+        resp.status(404).json({
+          message: "One of your fields is wrong "
+        });
       if (!err) {
-        EmployerModel.findById(job.EmployerID).then((employer) => {
+        EmployerModel.findOne({
+          UserName: job.EmployerUserName
+        }).then((employer) => {
           employer.addToJobs(job);
         });
         resp.status(200).send(job);
@@ -81,15 +92,14 @@ exports.createNewJob = (req, resp) => {
 //Find job by ID and edit
 exports.findJobByIDAndUpdate = (req, resp) => {
   JobModel.findByIdAndUpdate(
-    req.params.id,
-    {
+    req.params.id, {
       $set: req.body,
     },
     (err, job) => {
       if (err)
         resp
-          .status(404)
-          .send("Please be sure you're updating an existing job " + err);
+        .status(404)
+        .send("Please be sure you're updating an existing job " + err);
       if (!err) {
         resp.status(200).send(job);
       }
@@ -99,22 +109,39 @@ exports.findJobByIDAndUpdate = (req, resp) => {
 
 //Find by ID and remove job from DB
 exports.findJobByIDAndRemove = (req, resp) => {
-  JobModel.findByIdAndRemove(
-    req.params.id,
-    { useFindAndModify: false },
-    (err, data) => {
-      if (err || !data) {
-        resp.status(404).json({
-          message: "Job ID is not correct!",
-        });
+  JobModel.findById(req.params.id, (err, job) => {
+    if (job) {
+      if (req.params.UserName == job.EmployerUserName) {
+        JobModel.findByIdAndRemove(req.params.id, {
+            useFindAndModify: false
+          },
+          (err, data) => {
+            if (err || !data) {
+              resp.status(404).json({
+                message: "Job ID is not correct!",
+              });
+            } else {
+              EmployerModel.findOne({
+                UserName: data.EmployerUserName
+              }).then((employer) => {
+                employer.removeFromJobs(data._id);
+              });
+              resp.status(200).json({
+                message: "Job deleted successfully",
+              });
+            }
+          }
+        );
       } else {
-        EmployerModel.findById(data.EmployerID).then((employer) => {
-          employer.removeFromJobs(data._id);
-        });
-        resp.status(200).json({
-          message: "Job deleted successfully",
+        resp.status(401).json({
+          message: "You Can't delete a job doesn't belong to you",
         });
       }
     }
-  );
+    if (err || !job) {
+      resp.status(404).json({
+        message: "Job ID is not correct!",
+      });
+    }
+  })
 };

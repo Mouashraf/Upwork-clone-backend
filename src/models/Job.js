@@ -4,9 +4,8 @@ const mongoose = require("mongoose");
 //Using mongoose Shcema constructor to create Job Schema
 const jobSchema = new mongoose.Schema(
   {
-    EmployerID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Employer",
+    EmployerUserName: {
+      type: String,
       required: true,
       immutable: true,
     },
@@ -104,15 +103,13 @@ const jobSchema = new mongoose.Schema(
       type: String,
       immutable: true,
     },
-    Proposals: {
-      list: [
+    Proposals: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Talent",
           required: true,
         },
       ],
-    },
     ConnectsNeeded: {
       type: Number,
       default: 3,
