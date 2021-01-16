@@ -94,13 +94,12 @@ const talentSchema = new mongoose.Schema({
 
     default: 0,
   },
-	Jobs: {
-		list: [{
+	Jobs: [
+		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Job",
 			required: true
-		}]
-	},
+		}],
   Connects: {
     type: Number,
     default: 0
@@ -111,15 +110,15 @@ const talentSchema = new mongoose.Schema({
 // Add Method into Talent Schema to add new job
 talentSchema.methods.addToJobs = function(job) {
 
-	const updatedJobsList = [...this.Jobs.list];
+	const updatedJobsList = [...this.Jobs];
 
 	updatedJobsList.push(job._id)
 
-	const updatedJobs = {
-		list: updatedJobsList
-	};
+	// const updatedJobs = {
+	// 	list: updatedJobsList
+	// };
 
-	this.Jobs = updatedJobs;
+	this.Jobs = updatedJobsList;
 
 	return this.save();
 };
@@ -127,11 +126,11 @@ talentSchema.methods.addToJobs = function(job) {
 
 // Add Method into Talent Schema to remove a job
 talentSchema.methods.removeFromJobs = function(jobID) {
-    const updatedlist = this.Jobs.list.filter(item => {
+    const updatedlist = this.Jobs.filter(item => {
         return item.toString() !== jobID.toString();
 	});
 	
-	this.Jobs.list = updatedlist;
+	this.Jobs = updatedlist;
 	
     return this.save();
 };

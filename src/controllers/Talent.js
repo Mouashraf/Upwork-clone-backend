@@ -108,6 +108,20 @@ exports.findTalentByUsernameAndUpdate = (req, resp) => {
 	)
 }
 
+//Find all Talent jobs using username
+exports.findAllTalentJobsByUsername = async (req, res) => {
+  TalentModel.findOne({
+      UserName: req.params.UserName
+    })
+    .populate('Jobs')
+    .exec((err, TalentJobs) => {
+      if (err) res.status(404).json({ message:"Please be sure you entered an existing talent username" + err});
+      if (!err) {
+        res.status(200).send(TalentJobs.Jobs);
+      }
+    });
+}
+
 //Find by username and remove talent from DB
 exports.findTalentByUsernameAndDelete = (req, resp) => {
   TalentModel.findOneAndDelete(

@@ -13,6 +13,9 @@ router.get("/:UserName", TalentController.getATalentByUsername);
 // create new Talent and add it to the DB
 router.post("/Add", Service.uploadImg, TalentController.createNewTalent);
 
+//Find Talent jobs by username
+router.get("/:UserName/jobs", TalentController.findAllTalentJobsByUsername);
+
 //Find Talent by username and Edit it
 router.patch("/:UserName", TalentController.findTalentByUsernameAndUpdate);
 
