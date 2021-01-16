@@ -2,9 +2,11 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 
-module.exports = (req, res) => {
+module.exports.checkAuth = (req, res, next) => {
+  const token = req.cookies.jwt;
   try {
-    const decoded = jwt.verify(req.body.token, "privateGP");
+    const decoded = jwt.verify(token, "privateGP");
+    console.log(decoded);
     req.userData = decoded;
     next();
   } catch (error) {
@@ -13,6 +15,7 @@ module.exports = (req, res) => {
     });
   }
 };
+
 //Authenticate user creation and encrypt password
 module.exports.authenticateAndEncryptPassword = (user, req, resp) => {
   if (user) {
@@ -41,6 +44,7 @@ module.exports.authenticateLogin = (model, req, resp) => {
         message: "Wrong email entered!",
       });
     } else {
+      const maxAge = 3 * 24 * 60 * 60;
       bcrypt.compare(req.body.Password, userData.Password, (err, res) => {
         if (err || !res) {
           resp.status(401).json({
@@ -52,12 +56,14 @@ module.exports.authenticateLogin = (model, req, resp) => {
             {
               email: userData.Email,
               ID: userData._id,
+              Username: userData.UserName,
             },
             "privateGP",
             {
-              expiresIn: "1h",
+              expiresIn: maxAge,
             }
           );
+          resp.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
           resp.status(200).json({
             message: "Successfully Authenticated!",
             token: token,

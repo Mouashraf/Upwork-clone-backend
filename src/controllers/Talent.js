@@ -78,7 +78,7 @@ exports.createNewTalent = (req, resp) => {
             Country: req.body.Country,
             PhoneNumber: req.body.PhoneNumber,
             Availability: req.body.Availability,
-            Connects: req.body.Connects
+            Connects: req.body.Connects,
           },
           (err, talent) => {
             if (err)
@@ -95,18 +95,22 @@ exports.createNewTalent = (req, resp) => {
 
 //Find Talent by username and edit it
 exports.findTalentByUsernameAndUpdate = (req, resp) => {
-	TalentModel.findOneAndUpdate(
-		{ UserName: req.params.UserName }, {
-			$set: req.body
-		},
-		(err, job) => {
-			if (err) resp.status(404).send("Please be sure you're updating an existing talent " + err);
-			if (!err) {
-				resp.status(200).send(job);
-			}
-		}
-	)
-}
+  TalentModel.findOneAndUpdate(
+    { UserName: req.params.UserName },
+    {
+      $set: req.body,
+    },
+    (err, job) => {
+      if (err)
+        resp
+          .status(404)
+          .send("Please be sure you're updating an existing talent " + err);
+      if (!err) {
+        resp.status(200).send(job);
+      }
+    }
+  );
+};
 
 //Find by username and remove talent from DB
 exports.findTalentByUsernameAndDelete = (req, resp) => {
@@ -130,4 +134,12 @@ exports.findTalentByUsernameAndDelete = (req, resp) => {
 //Login Authentication for the talent
 exports.authenticateLogin = (req, resp) => {
   authenticateLogin(TalentModel, req, resp);
+};
+
+//Logout for talents
+exports.logout = (req, resp) => {
+  resp.cookie("jwt", "", { maxAge: 1 });
+  resp.status(200).json({
+    message: "Logged out successfully",
+  });
 };
