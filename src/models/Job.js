@@ -125,5 +125,16 @@ const jobSchema = new mongoose.Schema(
   }
 );
 
+// Add Method into job Schema to add new proposal
+jobSchema.methods.addToProposals = function (talentID) {
+  const updatedProposalsList = [...this.Proposals];
+
+  updatedProposalsList.push(talentID);
+
+  this.Proposals = updatedProposalsList;
+
+  return this.save();
+};
+
 // Export the Jobs Schema so we can use it whenever we want
 module.exports = mongoose.model("Job", jobSchema);

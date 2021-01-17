@@ -7,6 +7,7 @@ const talentSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
+    // match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
   },
   UserName: {
     type: String,
@@ -24,6 +25,7 @@ const talentSchema = new mongoose.Schema({
   Password: {
     type: String,
     required: true,
+    minLength: 6,
   },
   isVerified: {
     type: Boolean,
@@ -101,9 +103,17 @@ const talentSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  SavedJobs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Job",
+      required: true,
+    },
+  ],
   Connects: {
     type: Number,
     default: 0,
+    min: 0
   },
 });
 
@@ -112,10 +122,6 @@ talentSchema.methods.addToJobs = function (job) {
   const updatedJobsList = [...this.Jobs];
 
   updatedJobsList.push(job._id);
-
-  // const updatedJobs = {
-  // 	list: updatedJobsList
-  // };
 
   this.Jobs = updatedJobsList;
 
@@ -133,5 +139,34 @@ talentSchema.methods.removeFromJobs = function (jobID) {
   return this.save();
 };
 
+// Add Method into Talent Schema to deduct connects
+talentSchema.methods.deductFromConnects = function (num) {
+
+  this.Connects -= num;
+
+  return this.save();
+};
+
+// Add Method into Talent Schema to add new job to saved collection
+talentSchema.methods.addToSavedJobs = function (job) {
+  const updatedSavedJobsList = [...this.SavedJobs];
+
+  updatedSavedJobsList.push(job._id);
+
+  this.SavedJobs = updatedSavedJobsList;
+
+  return this.save();
+};
+
+// Add Method into Talent Schema to remove a job from saved collection
+talentSchema.methods.removeFromSavedJobs = function (jobID) {
+  const updatedlist = this.SavedJobs.filter((item) => {
+    return item.toString() !== jobID.toString();
+  });
+
+  this.SavedJobs = updatedlist;
+
+  return this.save();
+};
 // Export the Talents Schema so we can use it whenever we want
 module.exports = mongoose.model("Talent", talentSchema);
