@@ -38,7 +38,9 @@ module.exports.authenticateAndEncryptPassword = (user, req, resp) => {
 
 //Authenticate and give token
 module.exports.authenticateLogin = (model, req, resp) => {
-  model.findOne({ Email: req.body.Email }, (err, userData) => {
+  model.findOne({
+    Email: req.body.Email
+  }, (err, userData) => {
     if (err || !userData) {
       resp.status(401).json({
         message: "Wrong email entered!",
@@ -52,18 +54,19 @@ module.exports.authenticateLogin = (model, req, resp) => {
           });
         }
         if (res) {
-          const token = jwt.sign(
-            {
+          const token = jwt.sign({
               email: userData.Email,
               ID: userData._id,
               Username: userData.UserName,
             },
-            "privateGP",
-            {
+            "privateGP", {
               expiresIn: maxAge,
             }
           );
-          resp.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+          resp.cookie("jwt", token, {
+            httpOnly: true,
+            maxAge: maxAge * 1000
+          });
           resp.status(200).json({
             message: "Successfully Authenticated!",
             token: token,
