@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+require('dotenv').config()
 
 class Connection {
   constructor() {

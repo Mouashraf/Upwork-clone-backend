@@ -1,5 +1,6 @@
 import server from "./config/server";
 import "./config/database";
+require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
