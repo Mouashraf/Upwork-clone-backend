@@ -38,13 +38,11 @@ const employerSchema = new mongoose.Schema({
     enum: ["Egypt", "UK", "US"],
     default: "Egypt",
   },
-  Jobs: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Job",
-      required: true,
-    },
-  ],
+  Jobs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Job",
+    required: true,
+  }, ],
 });
 
 // Add Method into Employer Schema to add new job
@@ -52,10 +50,6 @@ employerSchema.methods.addToJobs = function (job) {
   const updatedJobsList = [...this.Jobs];
 
   updatedJobsList.push(job._id);
-
-  // const updatedJobs = {
-  // 	list: updatedJobsList
-  // };
 
   this.Jobs = updatedJobsList;
 
