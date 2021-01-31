@@ -13,7 +13,7 @@ router.get("/", TalentController.getAllTalents);
 router.get("/:UserName", TalentController.getATalentByUsername);
 
 // signup Talent and add it to the DB
-router.post("/signup", Service.uploadImg, TalentController.createNewTalent);
+router.post("/signup",  TalentController.createNewTalent);
 
 //Find Talent jobs by username
 router.get("/:UserName/jobs", TalentController.findAllTalentJobsByUsername);
