@@ -87,7 +87,6 @@ const talentSchema = new mongoose.Schema({
 
   Availability: {
     type: Number,
-
     // Number refer to Availability status
     // 0 ==> Available as needed
     // 30 ==> Less Than 30 hrs/week
