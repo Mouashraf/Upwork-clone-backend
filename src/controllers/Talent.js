@@ -82,8 +82,8 @@ exports.createNewTalent = (req, resp) => {
             HourlyRate: req.body.HourlyRate,
             Title: req.body.Title,
             ProfessionalOverview: req.body.ProfessionalOverview,
-            ImageURL: !req.file ?
-              "https://www.djelfa.info/mobi/img/avatar/avatar.png" : req.file.path,
+            // ImageURL: !req.file ?
+            //   "https://www.djelfa.info/mobi/img/avatar/avatar.png" : req.file.path,
             Country: req.body.Country,
             PhoneNumber: req.body.PhoneNumber,
             Availability: req.body.Availability,
