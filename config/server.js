@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+const cors = require('cors');
 
 const server = express();
 
@@ -11,6 +12,8 @@ server.use(cookieParser());
 const employerRoutes = require("../src/routes/Employer");
 const talentRoutes = require("../src/routes/Talent");
 const jobRoutes = require("../src/routes/Job");
+
+server.use(cors());
 
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

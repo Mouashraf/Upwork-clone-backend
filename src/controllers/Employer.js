@@ -116,7 +116,7 @@ exports.findAllEmployerJobsByUsername = async (req, res) => {
     })
     .populate("Jobs")
     .exec((err, EmployerJobs) => {
-      if (err) res.status(404).json({
+      if (err || !EmployerJobs) res.status(404).json({
         message: "Please be sure you entered an existing employer username" + err
       });
       if (!err) {

@@ -168,5 +168,12 @@ talentSchema.methods.removeFromSavedJobs = function (jobID) {
 
   return this.save();
 };
+
+// Return talents connects after accepted in a job
+talentSchema.methods.returnConnects = function(connectsNumber) {
+  this.Connects += connectsNumber;
+
+  return this.save();
+};
 // Export the Talents Schema so we can use it whenever we want
 module.exports = mongoose.model("Talent", talentSchema);

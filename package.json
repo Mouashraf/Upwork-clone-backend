@@ -29,6 +29,7 @@
     "@babel/node": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "babel-loader": "^8.2.2",
+    "cors": "^2.8.5",
     "nodemon": "^2.0.7"
   }
 }

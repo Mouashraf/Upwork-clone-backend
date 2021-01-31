@@ -21,6 +21,10 @@ router.post(
 //Find job by ID and Edit it
 router.patch("/:UserName/:id", JobController.findJobByIDAndUpdate);
 
+//Find job and accept a proposal by Employer
+router.patch("/:UserName/:id/:TalentUserName", Authentication.checkAuth,
+  authorization.authorize, JobController.findJobAndAcceptAProposalByEmployer, JobController.findJobByIDAndUpdate);
+
 //Find job by username and make proposal
 router.post(
   "/:UserName/:id/proposal",

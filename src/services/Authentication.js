@@ -46,7 +46,7 @@ module.exports.authenticateLogin = (model, req, resp) => {
         message: "Wrong email entered!",
       });
     } else {
-      const maxAge = 3 * 24 * 60 * 60;
+      const maxAge = 3 * 24 * 60 * 60; // seconds
       bcrypt.compare(req.body.Password, userData.Password, (err, res) => {
         if (err || !res) {
           resp.status(401).json({
