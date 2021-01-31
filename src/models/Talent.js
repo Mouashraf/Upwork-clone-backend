@@ -93,7 +93,6 @@ const talentSchema = new mongoose.Schema({
     // 30 ==> Less Than 30 hrs/week
     // 100 ==> More Than 30 hrs/week
     enum: [0, 30, 100],
-
     default: 0,
   },
   Jobs: [
