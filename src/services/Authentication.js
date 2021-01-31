@@ -19,13 +19,13 @@ module.exports.checkAuth = (req, res, next) => {
 //Authenticate user creation and encrypt password
 module.exports.authenticateAndEncryptPassword = (user, req, resp) => {
   if (user) {
-    deleteUnwantedImage(req);
+    // deleteUnwantedImage(req);
     return resp.status(409).json({
       message: "Email, username or phone number already exist",
     });
   } else {
     if (req.body.Password.length < 6) {
-      deleteUnwantedImage(req);
+      // deleteUnwantedImage(req);
       return resp.status(500).json({
         message: "Enter a valid password",
       });
