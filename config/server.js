@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const server = express();
 
+server.use(cors());
 server.use("/uploads", express.static("uploads"));
 server.use(bodyParser.json());
 server.use(cookieParser());
@@ -13,7 +14,6 @@ const employerRoutes = require("../src/routes/Employer");
 const talentRoutes = require("../src/routes/Talent");
 const jobRoutes = require("../src/routes/Job");
 
-server.use(cors());
 
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
