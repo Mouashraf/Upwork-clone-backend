@@ -6,7 +6,7 @@ module.exports.checkAuth = (req, res, next) => {
   const token = req.cookies.jwt;
   try {
     const decoded = jwt.verify(token, "privateGP");
-    console.log(decoded);
+    // console.log(decoded);
     req.userData = decoded;
     next();
   } catch (error) {
