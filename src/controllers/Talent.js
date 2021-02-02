@@ -104,6 +104,9 @@ exports.createNewTalent = (req, resp) => {
 
 //Find Talent by username and edit it
 exports.findTalentByUsernameAndUpdate = (req, resp) => {
+  if (req.file) {
+    req.body.ImageURL = req.file.path
+  }
   TalentModel.findOneAndUpdate({
       UserName: req.params.UserName
     }, {
