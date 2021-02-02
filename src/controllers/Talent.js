@@ -61,9 +61,9 @@ exports.createNewTalent = (req, resp) => {
         {
           UserName: req.body.UserName
         },
-        {
-          PhoneNumber: req.body.PhoneNumber
-        },
+        // {
+        //   PhoneNumber: req.body.PhoneNumber
+        // },
       ],
     },
     (err, user) => {
@@ -92,7 +92,7 @@ exports.createNewTalent = (req, resp) => {
           (err, talent) => {
             if (err)
               resp.status(500).json({
-                message: "One or more fields isn't valid" + err,
+                message: "One or more fields isn't valid " + err,
               });
             resp.status(200).send(talent);
           }
@@ -104,6 +104,9 @@ exports.createNewTalent = (req, resp) => {
 
 //Find Talent by username and edit it
 exports.findTalentByUsernameAndUpdate = (req, resp) => {
+  if (req.file) {
+    req.body.ImageURL = req.file.path
+  }
   TalentModel.findOneAndUpdate({
       UserName: req.params.UserName
     }, {
