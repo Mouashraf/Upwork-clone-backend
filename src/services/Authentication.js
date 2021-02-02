@@ -36,6 +36,7 @@ module.exports.authenticateAndEncryptPassword = (user, req, resp) => {
   }
 };
 
+
 //Authenticate and give token
 module.exports.authenticateLogin = (model, req, resp) => {
   model.findOne({
