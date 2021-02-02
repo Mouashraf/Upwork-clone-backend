@@ -24,8 +24,9 @@ router.get("/:UserName/saved-jobs", TalentController.findAllTalentSavedJobsByUse
 //Find Talent by username and Edit it
 router.patch(
   "/:UserName",
-  Authentication.checkAuth,
-  authorization.authorize,
+  // Authentication.checkAuth,
+  // authorization.authorize,
+  Service.uploadImg,
   TalentController.findTalentByUsernameAndUpdate
 );
 
