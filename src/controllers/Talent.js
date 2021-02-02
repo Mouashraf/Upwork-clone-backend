@@ -60,10 +60,7 @@ exports.createNewTalent = (req, resp) => {
         },
         {
           UserName: req.body.UserName
-        },
-        // {
-        //   PhoneNumber: req.body.PhoneNumber
-        // },
+        }
       ],
     },
     (err, user) => {
