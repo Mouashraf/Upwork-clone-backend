@@ -80,7 +80,7 @@ module.exports.authenticateLogin = (model, req, resp) => {
 
 //Function to delete the uploaded image if there is an error on adding a new talent
 function deleteUnwantedImage(req) {
-  if (typeof req.body.ImageURL != undefined) {
+  if (req.body.ImageURL !== undefined) {
     fs.unlink(req.file.path, (err) => {
       if (err) throw err;
       console.log("successfully deleted uploaded image");
