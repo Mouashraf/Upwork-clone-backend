@@ -64,7 +64,7 @@ module.exports.authenticateLogin = (model, req, resp) => {
             }
           );
           resp.cookie("jwt", token, {
-            httpOnly: true,
+            // httpOnly: true,
             maxAge: maxAge * 1000
           });
           resp.status(200).json({
