@@ -8,10 +8,8 @@ module.exports.checkAuth = (req, res, next) => {
     const decoded = jwt.verify(token, "privateGP");
     // console.log(decoded);
     req.userData = decoded;
-    console.log("Hiiiiiiiiiiiiiii")
     next();
   } catch (error) {
-    console.log(error, "no auth");
     return res.status(401).json({
       message: "Authentication Failed",
     });
@@ -66,7 +64,7 @@ module.exports.authenticateLogin = (model, req, resp) => {
             }
           );
           resp.cookie("jwt", token, {
-            // httpOnly: true,
+            httpOnly: false,
             maxAge: maxAge * 1000
           });
           resp.status(200).json({
