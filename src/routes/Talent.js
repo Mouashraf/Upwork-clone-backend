@@ -60,4 +60,5 @@ router.post("/login", TalentController.authenticateLogin);
 //logout
 router.post("/logout", TalentController.logout);
 
+
 module.exports = router;
