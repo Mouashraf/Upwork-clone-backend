@@ -36,7 +36,13 @@ exports.getATalentByUsername = (req, resp) => {
   TalentModel.findOne({
       UserName: req.params.UserName
     }, {
-      __v: 0
+      __v: 0,
+      Password: 0,
+      Connects,
+      SavedJobs,
+      PhoneNumber,
+      isVerified,
+      Email
     },
     (err, data) => {
       if (err || !data) {
