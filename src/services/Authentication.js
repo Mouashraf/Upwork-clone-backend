@@ -65,7 +65,8 @@ module.exports.authenticateLogin = (model, req, resp) => {
           );
           resp.cookie("jwt", token, {
             httpOnly: false,
-            maxAge: maxAge * 1000
+            maxAge: maxAge * 1000,
+            domain: "127.0.0.1"
           });
           resp.status(200).json({
             message: "Successfully Authenticated!",
