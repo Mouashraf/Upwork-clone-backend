@@ -58,8 +58,20 @@ const jobSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    isFixedPrice: {
-      type: Boolean,
+    PaymentType: {
+      type: Object,
+      enum: [{
+        FixedPrice: {
+          type: Number,
+          required: true
+        }
+      },
+      {
+        HourlyRate: {
+          type: String,
+          required: true
+        }
+      }],
       default: false,
     },
     Duration: {
