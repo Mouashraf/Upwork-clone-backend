@@ -13,8 +13,8 @@ router.get("/:id", JobController.getAJobById);
 // create new job and add it to the DB
 router.post(
   "/Add-job/:UserName",
-  Authentication.checkAuth,
-  authorization.authorize,
+  // Authentication.checkAuth,
+  // authorization.authorize,
   JobController.createNewJob
 );
 
