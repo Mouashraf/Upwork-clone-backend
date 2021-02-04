@@ -10,7 +10,7 @@ module.exports.checkAuth = (req, res, next) => {
     req.userData = decoded;
     next();
   } catch (error) {
-    console(log, "no auth");
+    console.log(error, "no auth");
     return res.status(401).json({
       message: "Authentication Failed",
     });
