@@ -71,8 +71,7 @@ const jobSchema = new mongoose.Schema(
           type: String,
           required: true
         }
-      }],
-      default: false,
+      }]
     },
     Duration: {
       type: Number,
