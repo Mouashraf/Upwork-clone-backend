@@ -5,7 +5,10 @@ const cors = require('cors');
 
 const server = express();
 
-server.use(cors());
+server.use(cors({
+  origin: "http://localhost:5000",
+  credentials: true
+}));
 server.use("/uploads", express.static("uploads"));
 server.use(bodyParser.json());
 server.use(cookieParser());
