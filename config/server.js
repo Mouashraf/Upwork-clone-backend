@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const server = express();
 
+
 server.use(cors({
   origin: 'http://localhost:4200',
   credentials: true
@@ -17,7 +18,6 @@ server.use(cookieParser());
 const employerRoutes = require("../src/routes/Employer");
 const talentRoutes = require("../src/routes/Talent");
 const jobRoutes = require("../src/routes/Job");
-
 
 //directs the routes to the required folder
 server.use("/employer", employerRoutes);
