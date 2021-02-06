@@ -64,9 +64,8 @@ module.exports.authenticateLogin = (model, req, resp) => {
             }
           );
           resp.cookie("jwt", token, {
-            httpOnly: false,
+            httpOnly: true,
             maxAge: maxAge * 1000,
-            domain: "api-upwork-graduation-project.herokuapp.com"
           });
           resp.status(200).json({
             message: "Successfully Authenticated!",
