@@ -35,7 +35,7 @@ exports.getAllJobs = (req, resp) => {
 //Get a job by ID
 exports.getAJobById = (req, resp) => {
   JobModel.findById(
-    req.params.jobID, {
+    req.params.id, {
       __v: 0,
     },
     (err, data) => {
