@@ -24,8 +24,8 @@ router.get("/:UserName/saved-jobs", TalentController.findAllTalentSavedJobsByUse
 //Find Talent by username and Edit it
 router.patch(
   "/:UserName",
-  // Authentication.checkAuth,
-  // authorization.authorize,
+  Authentication.checkAuth,
+  authorization.authorize,
   Service.uploadImg,
   TalentController.findTalentByUsernameAndUpdate
 );
@@ -59,5 +59,6 @@ router.post("/login", TalentController.authenticateLogin);
 
 //logout
 router.post("/logout", TalentController.logout);
+
 
 module.exports = router;

@@ -5,7 +5,12 @@ const cors = require("cors");
 
 const server = express();
 
-server.use(cors());
+
+server.use(cors({
+  origin: 'http://localhost:4200',
+  credentials: true
+}));
+
 server.use("/uploads", express.static("uploads"));
 server.use(bodyParser.json());
 server.use(cookieParser());
@@ -13,18 +18,6 @@ server.use(cookieParser());
 const employerRoutes = require("../src/routes/Employer");
 const talentRoutes = require("../src/routes/Talent");
 const jobRoutes = require("../src/routes/Job");
-
-server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  res.header('Access-Control-Allow-Credentials', true);
-
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
-    return res.status(200).json({});
-  }
-  next();
-});
 
 //directs the routes to the required folder
 server.use("/employer", employerRoutes);
