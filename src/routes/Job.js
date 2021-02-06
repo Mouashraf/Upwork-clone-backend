@@ -8,7 +8,11 @@ const authorization = require("../services/Authorization");
 router.get("/", JobController.getAllJobs);
 
 //Get a job by ID
+
 router.get("/:id", JobController.getAJobById);
+
+//Get a job by Category
+
 
 // create new job and add it to the DB
 router.post(
@@ -19,11 +23,18 @@ router.post(
 );
 
 //Find job by ID and Edit it
+
+// ISSUE!!!!
 router.patch("/:UserName/:id", JobController.findJobByIDAndUpdate);
 
 //Find job and accept a proposal by Employer
-router.patch("/:UserName/:id/:TalentUserName", Authentication.checkAuth,
-  authorization.authorize, JobController.findJobAndAcceptAProposalByEmployer, JobController.findJobByIDAndUpdate);
+router.patch(
+  "/:UserName/:id/:TalentUserName",
+  Authentication.checkAuth,
+  authorization.authorize,
+  JobController.findJobAndAcceptAProposalByEmployer,
+  JobController.findJobByIDAndUpdate
+);
 
 //Find job by username and make proposal
 router.post(

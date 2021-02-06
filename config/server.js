@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-const cors = require('cors');
+const cors = require("cors");
 
 const server = express();
 
@@ -14,10 +14,11 @@ const employerRoutes = require("../src/routes/Employer");
 const talentRoutes = require("../src/routes/Talent");
 const jobRoutes = require("../src/routes/Job");
 
-
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "*");
+  res.header('Access-Control-Allow-Credentials', true);
+
   if (req.method === "OPTIONS") {
     res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
     return res.status(200).json({});

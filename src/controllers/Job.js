@@ -33,6 +33,8 @@ exports.getAllJobs = (req, resp) => {
 };
 
 //Get a job by ID
+
+//FIX search by Category
 exports.getAJobById = (req, resp) => {
   JobModel.findById(
     req.params.jobID, {
