@@ -38,11 +38,11 @@ exports.getATalentByUsername = (req, resp) => {
     }, {
       __v: 0,
       Password: 0,
-      Connects,
-      SavedJobs,
-      PhoneNumber,
-      isVerified,
-      Email
+      Connects: 0,
+      SavedJobs: 0,
+      PhoneNumber: 0,
+      isVerified: 0,
+      Email: 0
     },
     (err, data) => {
       if (err || !data) {
