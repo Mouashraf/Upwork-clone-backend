@@ -13,7 +13,6 @@ router.get("/:id", JobController.getAJobById);
 
 //Get a job by Category
 
-
 // create new job and add it to the DB
 router.post(
   "/Add-job/:UserName",
