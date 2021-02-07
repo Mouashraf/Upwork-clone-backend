@@ -32,6 +32,36 @@ exports.getAllJobs = (req, resp) => {
   );
 };
 
+// Search for jobs by skill
+exports.searchforJobsBySkill = (req, resp) => {
+  JobModel.find({ Skills: { $in: req.params.skill } }, {
+      __v: 0,
+    },
+    (err, data) => {
+      if (err)
+        resp.status(404).json({
+          message: "Can't get the jobs ",
+        });
+      else {
+        const jobsCount = data.length;
+        // console.log("Worked.");
+        resp.status(200).send({
+          jobsCount,
+          jobs: data.map((data) => {
+            return {
+              data,
+              request: {
+                type: "GET",
+                url: "http://localhost:5000/job/" + data._id,
+              },
+            };
+          }),
+        });
+      }
+    }
+  );
+};
+
 //Get a job by ID
 exports.getAJobById = (req, resp) => {
   JobModel.findById(

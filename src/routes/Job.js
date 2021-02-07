@@ -6,6 +6,8 @@ const authorization = require("../services/Authorization");
 
 // get All Jobs
 router.get("/", JobController.getAllJobs);
+// get All Jobs
+router.get("/search/:skill", JobController.searchforJobsBySkill);
 
 //Get a job by ID
 router.get("/:id", JobController.getAJobById);
