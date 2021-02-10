@@ -43,6 +43,8 @@ const employerSchema = new mongoose.Schema({
     ref: "Job",
     required: true,
   }, ],
+}, {
+	timestamps: true,
 });
 
 // Add Method into Employer Schema to add new job

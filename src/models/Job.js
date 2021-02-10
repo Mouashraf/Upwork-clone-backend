@@ -77,11 +77,6 @@ const jobSchema = new mongoose.Schema(
     },
     WeeklyHoursRequired: {
       type: Number,
-
-      // Number refer to Availability status
-      // 0 ==> Available as needed
-      // 30 ==> Less Than 30 hrs/week
-      // 100 ==> More Than 30 hrs/week
       enum: [0, 30, 100],
 
       default: 0,
@@ -109,10 +104,16 @@ const jobSchema = new mongoose.Schema(
     },
     Proposals: [
         {
+          TalentID: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Talent",
-          required: true,
-        },
+          required: true
+          },
+          CoverLetter: {
+            type: String,
+            required: true
+          }
+        }
       ],
     ConnectsNeeded: {
       type: Number,
@@ -130,10 +131,13 @@ const jobSchema = new mongoose.Schema(
 );
 
 // Add Method into job Schema to add new proposal
-jobSchema.methods.addToProposals = function (talentID) {
+jobSchema.methods.addToProposals = function (talentID, coverLetter) {
   const updatedProposalsList = [...this.Proposals];
-
-  updatedProposalsList.push(talentID);
+  const newPropose = {
+    TalentID: talentID,
+    CoverLetter: coverLetter
+  }
+  updatedProposalsList.push(newPropose);
 
   this.Proposals = updatedProposalsList;
 

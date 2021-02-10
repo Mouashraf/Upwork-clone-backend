@@ -12,6 +12,12 @@ router.get("/", TalentController.getAllTalents);
 //Get a talent by username
 router.get("/:UserName", TalentController.getATalentByUsername);
 
+//Get all proposals for a talent by UserName
+router.get("/:UserName/proposals", TalentController.findAllProposalsForAJob);
+
+//Get specific propose for a job by ID
+router.get("/:UserName/proposals/:porposeID", TalentController.findAllProposalsForAJob, TalentController.findAProposeForAJob);
+
 // signup Talent and add it to the DB
 router.post("/signup", Service.uploadImg, TalentController.createNewTalent);
 

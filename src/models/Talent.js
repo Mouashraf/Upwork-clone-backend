@@ -110,6 +110,19 @@ const talentSchema = new mongoose.Schema({
 		default: 0,
 		min: 0
 	},
+	Proposals: [{
+		Job: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Job",
+			required: true
+		},
+		CoverLetter: {
+			type: String,
+			required: true
+		}
+	}]
+}, {
+	timestamps: true,
 });
 // talentSchema.index({PhoneNumber: 1}, {unique: true, sparse: true});
 
@@ -171,5 +184,20 @@ talentSchema.methods.returnConnects = function (connectsNumber) {
 
 	return this.save();
 };
+
+// Add Method into talent Schema to add new proposal
+talentSchema.methods.addToProposals = function (jobID, coverLetter) {
+	const updatedProposalsList = [...this.Proposals];
+	const newPropose = {
+	  Job: jobID,
+	  CoverLetter: coverLetter
+	}
+	updatedProposalsList.push(newPropose);
+  
+	this.Proposals = updatedProposalsList;
+  
+	return this.save();
+  };
+  
 // Export the Talents Schema so we can use it whenever we want
 module.exports = mongoose.model("Talent", talentSchema);

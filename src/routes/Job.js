@@ -13,7 +13,11 @@ router.get("/search/:skill", JobController.searchforJobsBySkill);
 
 router.get("/:id", JobController.getAJobById);
 
-//Get a job by Category
+//Get all proposals for a job by ID
+router.get("/:id/proposals", JobController.findAllProposalsForAJob);
+
+//Get specific propose for a job by ID
+router.get("/:id/proposals/:porposeID", JobController.findAllProposalsForAJob, JobController.findAProposeForAJob);
 
 // create new job and add it to the DB
 router.post(
@@ -37,9 +41,9 @@ router.patch(
   JobController.findJobByIDAndUpdate
 );
 
-//Find job by username and make proposal
+//Find job by ID and make a proposal by talent username
 router.post(
-  "/:UserName/:id/proposal",
+  "/:id/:UserName/propose",
   Authentication.checkAuth,
   authorization.authorize,
   JobController.findJobAndMakeAProposalByTalent
