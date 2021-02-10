@@ -38,7 +38,7 @@ exports.getATalentByUsername = (req, resp) => {
     }, {
       __v: 0,
       Password: 0,
-      Connects: 0,
+      // Connects: 0,
       SavedJobs: 0,
       PhoneNumber: 0,
       isVerified: 0,
@@ -201,6 +201,38 @@ exports.AddToTalentSavedJobsByUsername = (req, resp) => {
       }
     }
   );
+};
+
+//Find all proposals for a talent
+exports.findAllProposalsForAJob = async (req, res, next) => {
+  TalentModel.findOne({UserName: req.params.UserName})
+    .populate("Proposals.Job", "-Proposals -__v")
+    .exec((err, talent) => {
+      if (err || !talent) res.status(404).json({
+        message: "Please be sure you entered a correct talent username" + err
+      });
+      if (!err) {
+        if (req.params.porposeID) {
+          req.body.Proposals = talent.Proposals;
+          next()
+        } else {
+          res.status(200).json(talent.Proposals);
+        }
+      }
+    });
+};
+
+//Find a single propose for a job
+exports.findAProposeForAJob = async (req, res) => {
+  const Propose = req.body.Proposals.find((item) => {
+    return item._id.toString() === req.params.porposeID.toString();
+  });
+  if (!Propose) res.status(404).json({
+    message: "Please be sure you entered a correct propose id" + err
+  });
+  if (Propose) {
+    res.status(200).send(Propose);
+  }
 };
 
 //Remove job from talent's saved collection
