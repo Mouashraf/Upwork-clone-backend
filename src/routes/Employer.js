@@ -8,8 +8,19 @@ const authorization = require("../services/Authorization");
 // get All Employers
 router.get("/", EmployerController.getAllEmployers);
 
-//Get an employer by username
+//Get an employer details by username "Public"
 router.get("/:UserName", EmployerController.getAnEmployerByUsername);
+
+//Get an employer details by username "Auth"
+router.get("/auth/:UserName", Authentication.checkAuth,
+  authorization.authorize, EmployerController.getAnEmployerByUsernameAuth);
+
+//Find Employer jobs by username
+router.get("/:UserName/jobs", EmployerController.findAllEmployerJobsByUsername);
+
+//Find Employer jobs by username
+router.get("/auth/:UserName/jobs", Authentication.checkAuth,
+  authorization.authorize, EmployerController.findAllEmployerJobsByUsernameAuth);
 
 // create new Employer and add it to the DB
 router.post("/signup", Service.uploadImg, EmployerController.createNewEmployer);
@@ -21,9 +32,6 @@ router.patch(
   authorization.authorize,
   EmployerController.findEmployerByUsernameAndUpdate
 );
-
-//Find Employer jobs by username
-router.get("/:UserName/jobs", EmployerController.findAllEmployerJobsByUsername);
 
 // Find Employer by username and remove from DB // AUTHORIZE
 router.delete(

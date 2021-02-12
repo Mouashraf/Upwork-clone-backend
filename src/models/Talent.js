@@ -43,18 +43,10 @@ const talentSchema = new mongoose.Schema({
 		enum: ["Entry", "Intermediate", "Expert"],
 		default: "Entry",
 	},
-	Languages: {
+	EnglishProficiency: {
 		type: Object,
-		English: {
-			type: String,
-			enum: ["Basic", "Good", "Fluent", "Native"],
-			default: "Basic",
-		},
-		Arabic: {
-			type: String,
-			enum: ["Basic", "Good", "Fluent", "Native"],
-			default: "Basic",
-		},
+		enum: ["Basic", "Conversational", "Fluent", "Native or Bilingual"],
+		default: "Basic"
 	},
 	HourlyRate: {
 		type: Number,
@@ -87,13 +79,9 @@ const talentSchema = new mongoose.Schema({
 	},
 
 	Availability: {
-		type: Number,
-		// Number refer to Availability status
-		// 0 ==> Available as needed
-		// 30 ==> Less Than 30 hrs/week
-		// 100 ==> More Than 30 hrs/week
-		enum: [0, 30, 100],
-		default: 0,
+		type: String,
+		enum: ["Available as needed", "Less Than 30 hrs/week", "More Than 30 hrs/week"],
+		default: "Available as needed"
 	},
 	Jobs: [{
 		type: mongoose.Schema.Types.ObjectId,
@@ -189,15 +177,15 @@ talentSchema.methods.returnConnects = function (connectsNumber) {
 talentSchema.methods.addToProposals = function (jobID, coverLetter) {
 	const updatedProposalsList = [...this.Proposals];
 	const newPropose = {
-	  Job: jobID,
-	  CoverLetter: coverLetter
+		Job: jobID,
+		CoverLetter: coverLetter
 	}
 	updatedProposalsList.push(newPropose);
-  
+
 	this.Proposals = updatedProposalsList;
-  
+
 	return this.save();
-  };
-  
+};
+
 // Export the Talents Schema so we can use it whenever we want
 module.exports = mongoose.model("Talent", talentSchema);

@@ -9,23 +9,39 @@ const authorization = require("../services/Authorization");
 // get All Talents
 router.get("/", TalentController.getAllTalents);
 
-//Get a talent by username
+//Get a talent by username "Public"
 router.get("/:UserName", TalentController.getATalentByUsername);
 
+//Get a talent by username "Auth"
+router.get("/auth/:UserName",
+  Authentication.checkAuth,
+  authorization.authorize, TalentController.getATalentByUsernameAuth);
+
 //Get all proposals for a talent by UserName
-router.get("/:UserName/proposals", TalentController.findAllProposalsForAJob);
+router.get("/:UserName/proposals",
+  Authentication.checkAuth,
+  authorization.authorize, TalentController.findAllProposalsForAJob);
 
 //Get specific propose for a job by ID
-router.get("/:UserName/proposals/:porposeID", TalentController.findAllProposalsForAJob, TalentController.findAProposeForAJob);
+router.get("/:UserName/proposals/:proposeID",
+  Authentication.checkAuth,
+  authorization.authorize, TalentController.findAllProposalsForAJob, TalentController.findAProposeForAJob);
+
+//Find Talent jobs by username "Public"
+router.get("/:UserName/jobs", TalentController.findAllTalentJobsByUsername);
+
+//Find Talent jobs by username "Auth"
+router.get("/auth/:UserName/jobs",
+  Authentication.checkAuth,
+  authorization.authorize, TalentController.findAllTalentJobsByUsernameAuth);
+
+//Find Talent saved jobs by username
+router.get("/:UserName/saved-jobs",
+  Authentication.checkAuth,
+  authorization.authorize, TalentController.findAllTalentSavedJobsByUsername);
 
 // signup Talent and add it to the DB
 router.post("/signup", Service.uploadImg, TalentController.createNewTalent);
-
-//Find Talent jobs by username
-router.get("/:UserName/jobs", TalentController.findAllTalentJobsByUsername);
-
-//Find Talent saved jobs by username
-router.get("/:UserName/saved-jobs", TalentController.findAllTalentSavedJobsByUsername);
 
 //Find Talent by username and Edit it
 router.patch(

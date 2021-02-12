@@ -141,12 +141,21 @@ exports.findJobByIDAndUpdate = (req, resp) => {
       if (err)
         resp
         .status(404)
-        .send("Please be sure you're updating an existing job " + err);
+        .send({
+          message: "Please be sure you're updating an existing job "
+        });
       if (!err) {
-        resp.status(200).send(job);
+        if (job.EmployerUserName == req.params.UserName) {
+          resp.status(200).send(job);
+        } else {
+          resp
+            .status(401)
+            .send({
+              message: "This job is not belong to you"
+            });
+        }
       }
-    }
-  );
+    });
 };
 
 //Find job and make a proposal by Talent
@@ -258,14 +267,20 @@ exports.findAllProposalsForAJob = async (req, res, next) => {
     .populate("Proposals.TalentID", "FirstName LastName UserName")
     .exec((err, job) => {
       if (err || !job) res.status(404).json({
-        message: "Please be sure you entered a correct job id" + err
+        message: "Please be sure you entered a correct job id"
       });
       if (!err) {
-        if (req.params.porposeID) {
+        if (req.params.proposeID) {
           req.body.Proposals = job.Proposals;
           next()
         } else {
-          res.status(200).json(job.Proposals);
+          if (job.EmployerUserName == req.params.UserName) {
+            res.status(200).json(job.Proposals);
+          } else {
+            res.status(401).json({
+              message: "This job is not belong to you"
+            })
+          }
         }
       }
     });
@@ -274,15 +289,21 @@ exports.findAllProposalsForAJob = async (req, res, next) => {
 //Find a single propose for a job
 exports.findAProposeForAJob = async (req, res) => {
   const Propose = req.body.Proposals.find((item) => {
-    return item._id.toString() === req.params.porposeID.toString();
+    return item._id.toString() === req.params.proposeID.toString();
   });
   if (!Propose) res.status(404).json({
-    message: "Please be sure you entered a correct propose id" + err
+    message: "Please be sure you entered a correct propose id"
   });
   if (Propose) {
-    res.status(200).send(Propose);
-  }
-};
+    if (job.EmployerUserName == req.params.UserName) {
+      res.status(200).send(Propose);
+    } else {
+      res.status(401).json({
+        message: "This job is not belong to you"
+      })
+    }
+  };
+}
 
 //Find by ID and remove job from DB
 exports.findJobByIDAndRemove = (req, resp) => {
@@ -321,5 +342,6 @@ exports.findJobByIDAndRemove = (req, resp) => {
         message: "Job ID is not correct!",
       });
     }
+
   });
 };

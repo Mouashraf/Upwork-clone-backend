@@ -35,7 +35,7 @@ const employerSchema = new mongoose.Schema({
   },
   Country: {
     type: String,
-    enum: ["Egypt", "UK", "US"],
+    // enum: ["Egypt", "UK", "US"],
     default: "Egypt",
   },
   Jobs: [{
