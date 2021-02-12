@@ -4,7 +4,9 @@ const TalentModel = require("../models/Talent");
 
 // get All Jobs
 exports.getAllJobs = (req, resp) => {
-  JobModel.find({}, {
+  JobModel.find(
+    {},
+    {
       __v: 0,
     },
     (err, data) => {
@@ -67,6 +69,8 @@ exports.searchforJobsBySkill = (req, resp) => {
 };
 
 //Get a job by ID
+
+//FIX search by Category
 exports.getAJobById = (req, resp) => {
   JobModel.findById(
     req.params.id, {
@@ -88,7 +92,8 @@ exports.getAJobById = (req, resp) => {
 exports.createNewJob = (req, resp) => {
   // Add Employer ID
 
-  JobModel.create({
+  JobModel.create(
+    {
       EmployerUserName: req.params.UserName,
       Name: req.body.Name,
       Category: req.body.Category,
@@ -112,7 +117,7 @@ exports.createNewJob = (req, resp) => {
       TalentReview: req.body.TalentReview,
       Proposals: req.body.Proposals,
       ConnectsNeeded: req.body.ConnectsNeeded,
-      Status: req.body.Status
+      Status: req.body.Status,
     },
     (err, job) => {
       if (err)
@@ -134,7 +139,8 @@ exports.createNewJob = (req, resp) => {
 //Find job by ID and edit
 exports.findJobByIDAndUpdate = (req, resp) => {
   JobModel.findByIdAndUpdate(
-    req.params.id, {
+    req.params.id,
+    {
       $set: req.body,
     },
     (err, job) => {
@@ -160,7 +166,8 @@ exports.findJobByIDAndUpdate = (req, resp) => {
 
 //Find job and make a proposal by Talent
 exports.findJobAndMakeAProposalByTalent = (req, res) => {
-  TalentModel.findOne({
+  TalentModel.findOne(
+    {
       UserName: req.params.UserName,
     },
     (err, talent) => {
@@ -202,7 +209,8 @@ exports.findJobAndMakeAProposalByTalent = (req, res) => {
 
 //Find job and accept a proposal by Employer
 exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
-  TalentModel.findOne({
+  TalentModel.findOne(
+    {
       UserName: req.params.TalentUserName,
     },
     (err, talent) => {
@@ -224,33 +232,34 @@ exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
           }
           // });
 
-          // JobModel.findById(req.params.id, (err, job) => {
-          //   if (job) {
-          //     if (job.EmployerUserName == req.params.UserName) {
-          //       const isProposed = job.Proposals.find((item) => {
-          //         return item.toString() === talent._id.toString();
-          //       });
-          //       if (isProposed) {
-          //         req.body.TalentUserName = req.params.TalentUserName;
-          //         req.body.Status = "Ongoing"
-          //         next();
-          //       } else {
-          //         res.status(401).json({
-          //           message: "Talent isn't proposed to this job",
-          //         });
-          //       }
-          //     } else {
-          //       res.status(404).json({
-          //         message: "This Job Doesn't belong to this Employer",
-          //       });
-          //     }
-          //   }
-          if (err || !job) {
-            res.status(404).json({
-              message: "Sorry your request can't processed!",
-            });
+            // JobModel.findById(req.params.id, (err, job) => {
+            //   if (job) {
+            //     if (job.EmployerUserName == req.params.UserName) {
+            //       const isProposed = job.Proposals.find((item) => {
+            //         return item.toString() === talent._id.toString();
+            //       });
+            //       if (isProposed) {
+            //         req.body.TalentUserName = req.params.TalentUserName;
+            //         req.body.Status = "Ongoing"
+            //         next();
+            //       } else {
+            //         res.status(401).json({
+            //           message: "Talent isn't proposed to this job",
+            //         });
+            //       }
+            //     } else {
+            //       res.status(404).json({
+            //         message: "This Job Doesn't belong to this Employer",
+            //       });
+            //     }
+            //   }
+            if (err || !job) {
+              res.status(404).json({
+                message: "Sorry your request can't processed!",
+              });
+            }
           }
-        });
+        );
       }
       if (err || !talent) {
         res.status(404).json({
@@ -311,7 +320,8 @@ exports.findJobByIDAndRemove = (req, resp) => {
     if (job) {
       if (req.params.UserName == job.EmployerUserName) {
         JobModel.findByIdAndRemove(
-          req.params.id, {
+          req.params.id,
+          {
             useFindAndModify: false,
           },
           (err, data) => {

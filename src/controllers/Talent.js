@@ -33,9 +33,11 @@ exports.getAllTalents = (req, resp) => {
 
 //Get a talent by username "Public"
 exports.getATalentByUsername = (req, resp) => {
-  TalentModel.findOne({
-      UserName: req.params.UserName
-    }, {
+  TalentModel.findOne(
+    {
+      UserName: req.params.UserName,
+    },
+    {
       __v: 0,
       Password: 0,
       Connects: 0,
@@ -72,7 +74,7 @@ exports.getATalentByUsernameAuth = (req, resp) => {
     (err, data) => {
       if (err || !data) {
         resp.status(404).json({
-          message: "Wrong username entered"
+          message: "Wrong username entered",
         });
       } else {
         resp.status(200).send(data);
@@ -85,19 +87,22 @@ exports.getATalentByUsernameAuth = (req, resp) => {
 exports.createNewTalent = (req, resp) => {
   console.log(req.body.Password);
 
-  TalentModel.findOne({
-      $or: [{
-          Email: req.body.Email
+  TalentModel.findOne(
+    {
+      $or: [
+        {
+          Email: req.body.Email,
         },
         {
-          UserName: req.body.UserName
-        }
+          UserName: req.body.UserName,
+        },
       ],
     },
     (err, user) => {
       const hashedPassword = authenticateAndEncryptPassword(user, req, resp);
       if (typeof hashedPassword == "string") {
-        TalentModel.create({
+        TalentModel.create(
+          {
             Email: req.body.Email,
             UserName: req.body.UserName,
             FirstName: req.body.FirstName,
@@ -110,8 +115,9 @@ exports.createNewTalent = (req, resp) => {
             HourlyRate: req.body.HourlyRate,
             Title: req.body.Title,
             ProfessionalOverview: req.body.ProfessionalOverview,
-            ImageURL: !req.file ?
-              "https://www.djelfa.info/mobi/img/avatar/avatar.png" : req.file.path,
+            ImageURL: !req.file
+              ? "https://www.djelfa.info/mobi/img/avatar/avatar.png"
+              : req.file.path,
             Country: req.body.Country,
             PhoneNumber: req.body.PhoneNumber,
             Availability: req.body.Availability,
@@ -133,11 +139,13 @@ exports.createNewTalent = (req, resp) => {
 //Find Talent by username and edit it
 exports.findTalentByUsernameAndUpdate = (req, resp) => {
   if (req.file) {
-    req.body.ImageURL = req.file.path
+    req.body.ImageURL = req.file.path;
   }
-  TalentModel.findOneAndUpdate({
-      UserName: req.params.UserName
-    }, {
+  TalentModel.findOneAndUpdate(
+    {
+      UserName: req.params.UserName,
+    },
+    {
       $set: req.body,
     },
     (err, job) => {
@@ -176,18 +184,21 @@ exports.findAllTalentJobsByUsernameAuth = async (req, res) => {
     .exec((err, Talent) => {
       if (Talent) {
         res.status(200).send(Talent.Jobs);
-      } else res.status(404).json({
-        message: "Please be sure you entered an existing talent username"
-      });
+      } else
+        res.status(404).json({
+          message: "Please be sure you entered an existing talent username",
+        });
     });
-}
+};
 
 //Find by username and remove talent from DB
 exports.findTalentByUsernameAndDelete = (req, resp) => {
-  TalentModel.findOneAndDelete({
-      UserName: req.params.UserName
-    }, {
-      useFindAndModify: false
+  TalentModel.findOneAndDelete(
+    {
+      UserName: req.params.UserName,
+    },
+    {
+      useFindAndModify: false,
     },
     (err, talent) => {
       if (err || !talent) {
@@ -205,10 +216,12 @@ exports.findTalentByUsernameAndDelete = (req, resp) => {
 
 //Add job to talent's saved collection
 exports.AddToTalentSavedJobsByUsername = (req, resp) => {
-  TalentModel.findOne({
-      UserName: req.params.UserName
-    }, {
-      useFindAndModify: false
+  TalentModel.findOne(
+    {
+      UserName: req.params.UserName,
+    },
+    {
+      useFindAndModify: false,
     },
     (err, talent) => {
       if (err || !talent) {
@@ -277,10 +290,12 @@ exports.findAProposeForAJob = async (req, res) => {
 
 //Remove job from talent's saved collection
 exports.RemoveFromTalentSavedJobsByUsername = (req, resp) => {
-  TalentModel.findOne({
-      UserName: req.params.UserName
-    }, {
-      useFindAndModify: false
+  TalentModel.findOne(
+    {
+      UserName: req.params.UserName,
+    },
+    {
+      useFindAndModify: false,
     },
     (err, talent) => {
       if (err || !talent) {
@@ -294,7 +309,7 @@ exports.RemoveFromTalentSavedJobsByUsername = (req, resp) => {
               return item.toString() === job._id.toString();
             });
             if (isNotRemoved) {
-              talent.removeFromSavedJobs(job._id)
+              talent.removeFromSavedJobs(job._id);
               resp.status(200).json({
                 message: "Job removed from saved collection successfully",
               });
@@ -315,7 +330,6 @@ exports.RemoveFromTalentSavedJobsByUsername = (req, resp) => {
   );
 };
 
-
 //Find all Talent saved jobs using username
 exports.findAllTalentSavedJobsByUsername = async (req, res) => {
   TalentModel.findOne({
@@ -327,11 +341,11 @@ exports.findAllTalentSavedJobsByUsername = async (req, res) => {
         res.status(200).send(Talent.SavedJobs);
       } else {
         res.status(404).json({
-          message: "Please be sure you entered an existing talent username"
+          message: "Please be sure you entered an existing talent username",
         });
       }
     });
-}
+};
 
 //Login Authentication for the talent
 exports.authenticateLogin = (req, resp) => {
@@ -341,7 +355,7 @@ exports.authenticateLogin = (req, resp) => {
 //Logout for talents
 exports.logout = (req, resp) => {
   resp.cookie("jwt", "", {
-    maxAge: 1
+    maxAge: 1,
   });
   resp.status(200).json({
     message: "Logged out successfully",

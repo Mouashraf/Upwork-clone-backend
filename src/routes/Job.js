@@ -11,6 +11,7 @@ router.get("/", JobController.getAllJobs);
 router.get("/search/:skill", JobController.searchforJobsBySkill);
 
 //Get a job by ID
+
 router.get("/:id", JobController.getAJobById);
 
 //Get all proposals for a job by ID
@@ -36,8 +37,13 @@ router.patch("/:UserName/:id", Authentication.checkAuth,
   authorization.authorize, JobController.findJobByIDAndUpdate);
 
 //Find job and accept a proposal by Employer
-router.patch("/:UserName/:id/:TalentUserName", Authentication.checkAuth,
-  authorization.authorize, JobController.findJobAndAcceptAProposalByEmployer, JobController.findJobByIDAndUpdate);
+router.patch(
+  "/:UserName/:id/:TalentUserName",
+  Authentication.checkAuth,
+  authorization.authorize,
+  JobController.findJobAndAcceptAProposalByEmployer,
+  JobController.findJobByIDAndUpdate
+);
 
 //Find job by ID and make a proposal by talent username
 router.post(

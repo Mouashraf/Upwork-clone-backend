@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-const cors = require('cors');
+const cors = require("cors");
 
 const server = express();
 
