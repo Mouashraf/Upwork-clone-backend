@@ -113,7 +113,7 @@ const jobSchema = new mongoose.Schema({
   },
   Status: {
     type: String,
-    enum: ["Pending", "Ongiong", "Done"],
+    enum: ["Pending", "Ongoing", "Done"],
     default: "Pending",
   },
   StartDate: {
