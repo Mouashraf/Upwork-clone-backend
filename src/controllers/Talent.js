@@ -15,7 +15,7 @@ exports.getAllTalents = (req, resp) => {
       __v: 0,
     },
     (err, data) => {
-      if (err) resp.status(404).send("can not get any talents " + err);
+      if (err) resp.status(404).send("can not get any talents ");
       else {
         const talentsCount = data.length;
         resp.status(200).send({
@@ -32,10 +32,10 @@ exports.getAllTalents = (req, resp) => {
         });
       }
     }
-  );
+  ).sort([["createdAt", -1]]);
 };
 
-//Get a talent by username
+//Get a talent by username "Public"
 exports.getATalentByUsername = (req, resp) => {
   TalentModel.findOne(
     {
@@ -44,10 +44,37 @@ exports.getATalentByUsername = (req, resp) => {
     {
       __v: 0,
       Password: 0,
-      // Connects: 0,
+      Connects: 0,
       SavedJobs: 0,
       PhoneNumber: 0,
+      isVerified: 0,
       Email: 0,
+      Proposals: 0,
+      isVerified: 0,
+      PhoneNumber: 0,
+      Jobs: 0,
+    },
+    (err, data) => {
+      if (err || !data) {
+        resp.status(404).json({
+          message: "Wrong username entered",
+        });
+      } else {
+        resp.status(200).send(data);
+      }
+    }
+  );
+};
+
+//Get a talent by username "Auth"
+exports.getATalentByUsernameAuth = (req, resp) => {
+  TalentModel.findOne(
+    {
+      UserName: req.params.UserName,
+    },
+    {
+      __v: 0,
+      Password: 0,
     },
     (err, data) => {
       if (err || !data) {
@@ -89,7 +116,7 @@ exports.createNewTalent = (req, resp) => {
             MainService: req.body.MainService,
             Skills: req.body.Skills,
             ExpertiseLevel: req.body.ExpertiseLevel,
-            Languages: req.body.Languages,
+            EnglishProficiency: req.body.EnglishProficiency,
             HourlyRate: req.body.HourlyRate,
             Title: req.body.Title,
             ProfessionalOverview: req.body.ProfessionalOverview,
@@ -104,7 +131,7 @@ exports.createNewTalent = (req, resp) => {
           (err, talent) => {
             if (err)
               resp.status(500).json({
-                message: "One or more fields isn't valid " + err,
+                message: "One or more fields isn't valid ",
               });
             resp.status(200).send(talent);
           }
@@ -130,7 +157,7 @@ exports.findTalentByUsernameAndUpdate = (req, resp) => {
       if (err)
         resp
           .status(404)
-          .send("Please be sure you're updating an existing talent " + err);
+          .send("Please be sure you're updating an existing talent ");
       if (!err) {
         resp.status(200).send(job);
       }
@@ -138,12 +165,15 @@ exports.findTalentByUsernameAndUpdate = (req, resp) => {
   );
 };
 
-//Find all Talent jobs using username
+//Find all Talent jobs using username "Public"
 exports.findAllTalentJobsByUsername = async (req, res) => {
   TalentModel.findOne({
     UserName: req.params.UserName,
   })
-    .populate("Jobs")
+    .populate(
+      "Jobs",
+      "Status EmployerUserName Name EmployerRating EmployerReview TalentRating TalentReview"
+    )
     .exec((err, Talent) => {
       if (Talent) {
         res.status(200).send(Talent.Jobs);
@@ -151,7 +181,25 @@ exports.findAllTalentJobsByUsername = async (req, res) => {
         res.status(404).json({
           message: "Please be sure you entered an existing talent username",
         });
-    });
+    })
+    .sort([["createdAt", -1]]);
+};
+
+//Find all Talent jobs using username "Auth"
+exports.findAllTalentJobsByUsernameAuth = async (req, res) => {
+  TalentModel.findOne({
+    UserName: req.params.UserName,
+  })
+    .populate("Jobs", "-Proposals")
+    .exec((err, Talent) => {
+      if (Talent) {
+        res.status(200).send(Talent.Jobs);
+      } else
+        res.status(404).json({
+          message: "Please be sure you entered an existing talent username",
+        });
+    })
+    .sort([["createdAt", -1]]);
 };
 
 //Find by username and remove talent from DB
@@ -224,29 +272,30 @@ exports.findAllProposalsForAJob = async (req, res, next) => {
   TalentModel.findOne({ UserName: req.params.UserName })
     .populate("Proposals.Job", "-Proposals -__v")
     .exec((err, talent) => {
-      if (err || !talent)
+      if (err || !talent) {
         res.status(404).json({
-          message: "Please be sure you entered a correct talent username" + err,
+          message: "Please be sure you entered a correct talent username",
         });
-      if (!err) {
-        if (req.params.porposeID) {
+      } else {
+        if (req.params.proposeID) {
           req.body.Proposals = talent.Proposals;
           next();
         } else {
           res.status(200).json(talent.Proposals);
         }
       }
-    });
+    })
+    .sort([["createdAt", 1]]);
 };
 
 //Find a single propose for a job
 exports.findAProposeForAJob = async (req, res) => {
   const Propose = req.body.Proposals.find((item) => {
-    return item._id.toString() === req.params.porposeID.toString();
+    return item._id.toString() === req.params.proposeID.toString();
   });
   if (!Propose)
     res.status(404).json({
-      message: "Please be sure you entered a correct propose id" + err,
+      message: "Please be sure you entered a correct propose id",
     });
   if (Propose) {
     res.status(200).send(Propose);
@@ -300,7 +349,7 @@ exports.findAllTalentSavedJobsByUsername = async (req, res) => {
   TalentModel.findOne({
     UserName: req.params.UserName,
   })
-    .populate("SavedJobs")
+    .populate("SavedJobs", "-Proposals -__v")
     .exec((err, Talent) => {
       if (Talent) {
         res.status(200).send(Talent.SavedJobs);
@@ -309,7 +358,8 @@ exports.findAllTalentSavedJobsByUsername = async (req, res) => {
           message: "Please be sure you entered an existing talent username",
         });
       }
-    });
+    })
+    .sort([["createdAt", -1]]);
 };
 
 //Login Authentication for the talent

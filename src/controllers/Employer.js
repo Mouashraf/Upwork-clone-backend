@@ -27,15 +27,35 @@ exports.getAllEmployers = (req, resp) => {
         }),
       });
     }
-  });
+  }).sort([["createdAt", -1]]);
 };
 
-//Get an employer by username
+//Get an employer by username "Auth"
+exports.getAnEmployerByUsernameAuth = (req, resp) => {
+  EmployerModel.findOne({
+      UserName: req.params.UserName
+    }, {
+      __v: 0,
+      Password: 0
+    },
+    (err, data) => {
+      if (err || !data) {
+        resp.status(404).json({
+          message: "Wrong username entered"
+        });
+      } else {
+        resp.status(200).send(data);
+      }
+    }
+  );
+};
+
+//Get an employer by username "Public"
 exports.getAnEmployerByUsername = (req, resp) => {
   EmployerModel.findOne({
       UserName: req.params.UserName
     }, {
-      __v: 0
+      Country: 1
     },
     (err, data) => {
       if (err || !data) {
@@ -109,10 +129,26 @@ exports.findEmployerByUsernameAndUpdate = (req, resp) => {
   );
 };
 
-//Find all Employer jobs using username
+//Find all Employer jobs using username "Public"
 exports.findAllEmployerJobsByUsername = async (req, res) => {
   EmployerModel.findOne({
       UserName: req.params.UserName,
+    })
+    .populate("Jobs", "-Proposals -TalentUserName")
+    .exec((err, EmployerJobs) => {
+      if (err || !EmployerJobs) res.status(404).json({
+        message: "Please be sure you entered an existing employer username" + err
+      });
+      if (!err) {
+        res.status(200).send(EmployerJobs.Jobs);
+      }
+    }).sort([["createdAt", -1]]);
+};
+
+//Find all Employer jobs using username "Auth"
+exports.findAllEmployerJobsByUsernameAuth = async (req, res) => {
+  EmployerModel.findOne({
+      UserName: req.params.UserName
     })
     .populate("Jobs")
     .exec((err, EmployerJobs) => {
@@ -122,7 +158,7 @@ exports.findAllEmployerJobsByUsername = async (req, res) => {
       if (!err) {
         res.status(200).send(EmployerJobs.Jobs);
       }
-    });
+    }).sort([["createdAt", -1]]);
 };
 
 //Find by username and remove talent from DB

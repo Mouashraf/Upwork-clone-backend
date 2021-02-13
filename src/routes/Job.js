@@ -15,10 +15,14 @@ router.get("/search/:skill", JobController.searchforJobsBySkill);
 router.get("/:id", JobController.getAJobById);
 
 //Get all proposals for a job by ID
-router.get("/:id/proposals", JobController.findAllProposalsForAJob);
+router.get("/:UserName/:id/proposals",
+Authentication.checkAuth,
+authorization.authorize, JobController.findAllProposalsForAJob); // need to authinticate
 
 //Get specific propose for a job by ID
-router.get("/:id/proposals/:porposeID", JobController.findAllProposalsForAJob, JobController.findAProposeForAJob);
+router.get("/:UserName/:id/proposals/:proposeID",
+Authentication.checkAuth,
+authorization.authorize, JobController.findAllProposalsForAJob, JobController.findAProposeForAJob); // need to authinticate
 
 // create new job and add it to the DB
 router.post(
@@ -29,15 +33,14 @@ router.post(
 );
 
 //Find job by ID and Edit it
-
-// ISSUE!!!!
-router.patch("/:UserName/:id", JobController.findJobByIDAndUpdate);
+router.patch("/:UserName/:id", Authentication.checkAuth,
+  authorization.authorize, JobController.findJobByIDAndUpdate);
 
 //Find job and accept a proposal by Employer
 router.patch(
   "/:UserName/:id/:TalentUserName",
-  Authentication.checkAuth,
-  authorization.authorize,
+  // Authentication.checkAuth,
+  // authorization.authorize,
   JobController.findJobAndAcceptAProposalByEmployer,
   JobController.findJobByIDAndUpdate
 );
