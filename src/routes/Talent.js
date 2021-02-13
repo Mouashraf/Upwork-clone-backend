@@ -13,10 +13,19 @@ router.get("/", TalentController.getAllTalents);
 router.get("/:UserName", TalentController.getATalentByUsername);
 
 //Get all proposals for a talent by UserName
-router.get("/:UserName/proposals", TalentController.findAllProposalsForAJob);
+router.get(
+  "/:UserName/proposals",
+  Authentication.checkAuth,
+  authorization.authorize,
+  TalentController.findAllProposalsForAJob
+);
 
 //Get specific propose for a job by ID
-router.get("/:UserName/proposals/:porposeID", TalentController.findAllProposalsForAJob, TalentController.findAProposeForAJob);
+router.get(
+  "/:UserName/proposals/:porposeID",
+  TalentController.findAllProposalsForAJob,
+  TalentController.findAProposeForAJob
+);
 
 // signup Talent and add it to the DB
 router.post("/signup", Service.uploadImg, TalentController.createNewTalent);
@@ -25,7 +34,10 @@ router.post("/signup", Service.uploadImg, TalentController.createNewTalent);
 router.get("/:UserName/jobs", TalentController.findAllTalentJobsByUsername);
 
 //Find Talent saved jobs by username
-router.get("/:UserName/saved-jobs", TalentController.findAllTalentSavedJobsByUsername);
+router.get(
+  "/:UserName/saved-jobs",
+  TalentController.findAllTalentSavedJobsByUsername
+);
 
 //Find Talent by username and Edit it
 router.patch(
@@ -65,6 +77,5 @@ router.post("/login", TalentController.authenticateLogin);
 
 //logout
 router.post("/logout", TalentController.logout);
-
 
 module.exports = router;

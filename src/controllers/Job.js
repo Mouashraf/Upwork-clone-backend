@@ -31,16 +31,18 @@ exports.getAllJobs = (req, resp) => {
         });
       }
     }
-  );
+  ).sort({ createdAt: "asc" });
 };
 
 // Search for jobs by skill
 exports.searchforJobsBySkill = (req, resp) => {
-  JobModel.find({
+  JobModel.find(
+    {
       Skills: {
-        $in: req.params.skill
-      }
-    }, {
+        $in: req.params.skill,
+      },
+    },
+    {
       __v: 0,
     },
     (err, data) => {
@@ -73,7 +75,8 @@ exports.searchforJobsBySkill = (req, resp) => {
 //FIX search by Category
 exports.getAJobById = (req, resp) => {
   JobModel.findById(
-    req.params.id, {
+    req.params.id,
+    {
       __v: 0,
     },
     (err, data) => {
@@ -165,7 +168,7 @@ exports.findJobAndMakeAProposalByTalent = (req, res) => {
       JobModel.findById(req.params.id, async (err, job) => {
         if (job && req.body.CoverLetter) {
           const isEligible = job.Proposals.find((item) => {
-            return item.TalentID.toString() === talent._id.toString();
+            return item.TalentID === talent._id;
           });
           const isEnoughConnects = () => {
             return talent.Connects >= job.ConnectsNeeded;
@@ -185,7 +188,8 @@ exports.findJobAndMakeAProposalByTalent = (req, res) => {
         }
         if (err || !job || !req.body.CoverLetter) {
           res.status(404).json({
-            message: "Job ID is not correct or you haven't submitted a cover letter!",
+            message:
+              "Job ID is not correct or you haven't submitted a cover letter!",
           });
         }
       });
@@ -206,22 +210,24 @@ exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
     },
     (err, talent) => {
       if (talent) {
-        JobModel.findOne({
-          _id: req.params.id,
-          TalentUserName: {
-            $nin: talent.UserName
+        JobModel.findOne(
+          {
+            _id: req.params.id,
+            TalentUserName: {
+              $nin: talent.UserName,
+            },
+            EmployerUserName: req.params.UserName,
+            Proposals: talent._id.toString(),
+            Status: "Pending",
           },
-          EmployerUserName: req.params.UserName,
-          Proposals: talent._id.toString(),
-          Status: "Pending"
-        }, (err, job) => {
-          if (job) {
-            talent.returnConnects(job.ConnectsNeeded);
-            req.body.TalentUserName = req.params.TalentUserName;
-            req.body.Status = "Ongoing"
-            next();
-          }
-          // });
+          (err, job) => {
+            if (job) {
+              talent.returnConnects(job.ConnectsNeeded);
+              req.body.TalentUserName = req.params.TalentUserName;
+              req.body.Status = "Ongoing";
+              next();
+            }
+            // });
 
             // JobModel.findById(req.params.id, (err, job) => {
             //   if (job) {
@@ -266,13 +272,14 @@ exports.findAllProposalsForAJob = async (req, res, next) => {
   JobModel.findById(req.params.id)
     .populate("Proposals.TalentID", "FirstName LastName UserName")
     .exec((err, job) => {
-      if (err || !job) res.status(404).json({
-        message: "Please be sure you entered a correct job id" + err
-      });
+      if (err || !job)
+        res.status(404).json({
+          message: "Please be sure you entered a correct job id" + err,
+        });
       if (!err) {
         if (req.params.porposeID) {
           req.body.Proposals = job.Proposals;
-          next()
+          next();
         } else {
           res.status(200).json(job.Proposals);
         }
@@ -285,9 +292,10 @@ exports.findAProposeForAJob = async (req, res) => {
   const Propose = req.body.Proposals.find((item) => {
     return item._id.toString() === req.params.porposeID.toString();
   });
-  if (!Propose) res.status(404).json({
-    message: "Please be sure you entered a correct propose id" + err
-  });
+  if (!Propose)
+    res.status(404).json({
+      message: "Please be sure you entered a correct propose id" + err,
+    });
   if (Propose) {
     res.status(200).send(Propose);
   }
