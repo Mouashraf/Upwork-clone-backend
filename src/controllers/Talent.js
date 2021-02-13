@@ -28,7 +28,7 @@ exports.getAllTalents = (req, resp) => {
         }),
       });
     }
-  });
+  }).sort([["createdAt", -1]]);
 };
 
 //Get a talent by username "Public"
@@ -172,7 +172,7 @@ exports.findAllTalentJobsByUsername = async (req, res) => {
       } else res.status(404).json({
         message: "Please be sure you entered an existing talent username"
       });
-    });
+    }).sort([["createdAt", -1]]);
 }
 
 //Find all Talent jobs using username "Auth"
@@ -188,7 +188,7 @@ exports.findAllTalentJobsByUsernameAuth = async (req, res) => {
         res.status(404).json({
           message: "Please be sure you entered an existing talent username",
         });
-    });
+    }).sort([["createdAt", -1]]);
 };
 
 //Find by username and remove talent from DB
@@ -272,7 +272,7 @@ exports.findAllProposalsForAJob = async (req, res, next) => {
           res.status(200).json(talent.Proposals);
         }
       }
-    });
+    }).sort([["createdAt", -1]]);
 };
 
 //Find a single propose for a job
@@ -344,7 +344,7 @@ exports.findAllTalentSavedJobsByUsername = async (req, res) => {
           message: "Please be sure you entered an existing talent username",
         });
       }
-    });
+    }).sort([["createdAt", -1]]);
 };
 
 //Login Authentication for the talent

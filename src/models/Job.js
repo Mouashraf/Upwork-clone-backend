@@ -93,7 +93,7 @@ const jobSchema = new mongoose.Schema({
     immutable: true,
   },
   Proposals: [{
-    TalentID: {
+    Talent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Talent",
       required: true
@@ -116,6 +116,9 @@ const jobSchema = new mongoose.Schema({
     enum: ["Pending", "Ongiong", "Done"],
     default: "Pending",
   },
+  StartDate: {
+    type: Date
+  }
 }, {
   timestamps: true,
 });

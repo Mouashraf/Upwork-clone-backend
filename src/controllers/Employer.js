@@ -27,7 +27,7 @@ exports.getAllEmployers = (req, resp) => {
         }),
       });
     }
-  });
+  }).sort([["createdAt", -1]]);
 };
 
 //Get an employer by username "Auth"
@@ -142,7 +142,7 @@ exports.findAllEmployerJobsByUsername = async (req, res) => {
       if (!err) {
         res.status(200).send(EmployerJobs.Jobs);
       }
-    });
+    }).sort([["createdAt", -1]]);
 };
 
 //Find all Employer jobs using username "Auth"
@@ -158,7 +158,7 @@ exports.findAllEmployerJobsByUsernameAuth = async (req, res) => {
       if (!err) {
         res.status(200).send(EmployerJobs.Jobs);
       }
-    });
+    }).sort([["createdAt", -1]]);
 };
 
 //Find by username and remove talent from DB

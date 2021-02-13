@@ -39,8 +39,8 @@ router.patch("/:UserName/:id", Authentication.checkAuth,
 //Find job and accept a proposal by Employer
 router.patch(
   "/:UserName/:id/:TalentUserName",
-  Authentication.checkAuth,
-  authorization.authorize,
+  // Authentication.checkAuth,
+  // authorization.authorize,
   JobController.findJobAndAcceptAProposalByEmployer,
   JobController.findJobByIDAndUpdate
 );
