@@ -119,6 +119,9 @@ const jobSchema = new mongoose.Schema({
   },
   StartDate: {
     type: Date
+  },
+  EndDate: {
+    type: Date
   }
 }, {
   timestamps: true,

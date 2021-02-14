@@ -269,15 +269,53 @@ exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
   );
 };
 
+// End job by employer using username
+exports.endEmployerJobByUserName = (req, res, next) => {
+  EmployerModel.findOne({
+      UserName: req.params.UserName,
+    },
+    (err, Employer) => {
+      if (Employer) {
+        JobModel.findOne({
+          _id: req.params.id,
+          EmployerUserName: Employer.UserName,
+          HiredTalent: req.params.HiredTalentID,
+          Status: "Ongoing"
+        }, (err, job) => {
+          if (job) {
+            // const rating = req.body.EmployerRating;
+            // const review = req.body.EmployerReview;
+            req.body = {}; // clear requst body for secure the next update requst
+            // req.body.EmployerReview = review;
+            // req.body.EmployerRating = rating
+            req.body.Status = "Done";
+            req.body.EndDate = Date.now();
+            next();
+          } else {
+            res.status(404).json({
+              message: "Sorry your request can't processed!",
+            });
+          }
+        });
+      } else {
+        res.status(404).json({
+          message: "Employer Username is not correct!",
+        });
+      }
+    }
+  );
+};
+
 //Find all proposals for a job
 exports.findAllProposalsForAJob = async (req, res, next) => {
   JobModel.findById(req.params.id)
-    .populate("Proposals.TalentID", "FirstName LastName UserName ImageURL Title")
+    .populate("Proposals.Talent", "FirstName LastName UserName ImageURL Title")
     .exec((err, job) => {
-      if (err || !job) res.status(404).json({
-        message: "Please be sure you entered a correct job id"
-      });
-      if (!err) {
+      if (err || !job) {
+        res.status(404).json({
+          message: "Please be sure you entered a correct job id"
+        })
+      } else {
         if (req.params.proposeID) {
           req.body.Proposals = job.Proposals;
           next()
@@ -291,7 +329,7 @@ exports.findAllProposalsForAJob = async (req, res, next) => {
           }
         }
       }
-    }).sort([["createdAt", -1]]);
+    })
 };
 
 //Find a single propose for a job

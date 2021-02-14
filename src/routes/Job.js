@@ -39,9 +39,18 @@ router.patch("/:UserName/:id", Authentication.checkAuth,
 //Find job and accept a proposal by Employer
 router.patch(
   "/:UserName/:id/:TalentUserName",
+  Authentication.checkAuth,
+  authorization.authorize,
+  JobController.findJobAndAcceptAProposalByEmployer,
+  JobController.findJobByIDAndUpdate
+);
+
+// End Employer job using his username
+router.patch(
+  "/:UserName/:id/:HiredTalentID/end-job",
   // Authentication.checkAuth,
   // authorization.authorize,
-  JobController.findJobAndAcceptAProposalByEmployer,
+  JobController.endEmployerJobByUserName,
   JobController.findJobByIDAndUpdate
 );
 
@@ -52,6 +61,7 @@ router.post(
   authorization.authorize,
   JobController.findJobAndMakeAProposalByTalent
 );
+
 //Find job by username and remove from DB
 router.delete(
   "/:UserName/:id",
