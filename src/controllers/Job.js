@@ -113,7 +113,7 @@ exports.createNewJob = (req, resp) => {
       WeeklyHoursRequired: req.body.WeeklyHoursRequired,
       EmployerRating: req.body.EmployerRating,
       EmployerReview: req.body.EmployerReview,
-      TalentUserName: req.body.TalentUserName,
+      HiredTalent: req.body.HiredTalent,
       TalentRating: req.body.TalentRating,
       TalentReview: req.body.TalentReview,
       Proposals: req.body.Proposals,
@@ -215,8 +215,8 @@ exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
       if (talent) {
         JobModel.findOne({
           _id: req.params.id,
-          TalentUserName: {
-            $nin: talent.UserName
+          HiredTalent: {
+            $nin: talent._id.toString()
           },
           EmployerUserName: req.params.UserName,
           "Proposals.Talent": talent._id.toString(),
@@ -225,7 +225,7 @@ exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
           if (job) {
             // talent.returnConnects(job.ConnectsNeeded);
             req.body = {}; // clear requst body for secure the next update requst
-            req.body.TalentUserName = req.params.TalentUserName;
+            req.body.HiredTalent = talent._id;
             req.body.Status = "Ongoing";
             req.body.StartDate = Date.now();
             next();

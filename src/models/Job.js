@@ -80,8 +80,9 @@ const jobSchema = new mongoose.Schema({
     type: String,
     immutable: true,
   },
-  TalentUserName: {
-    type: String
+  HiredTalent: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Talent"
   },
   TalentRating: {
     type: Number,
