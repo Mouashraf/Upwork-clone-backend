@@ -58,7 +58,9 @@ exports.getAnEmployerByUsername = (req, resp) => {
   EmployerModel.findOne({
       UserName: req.params.UserName
     }, {
-      Country: 1
+      Country: 1,
+      Jobs: 1,
+      createdAt: 1
     },
     (err, data) => {
       if (err || !data) {
@@ -138,15 +140,14 @@ exports.findAllEmployerJobsByUsername = async (req, res) => {
     })
     .populate("Jobs", "-Proposals -HiredTalent")
     .exec((err, EmployerJobs) => {
-      if (err || !EmployerJobs) res.status(404).json({
-        message: "Please be sure you entered an existing employer username" + err
-      });
-      if (!err) {
+      if (err || !EmployerJobs) {
+        res.status(404).json({
+          message: "Please be sure you entered an existing employer username" + err
+        })
+      } else {
         res.status(200).send(EmployerJobs.Jobs);
       }
-    }).sort([
-      ["createdAt", -1]
-    ]);
+    })
 };
 
 //Find all Employer jobs using username "Auth"
@@ -173,9 +174,9 @@ exports.findAllEmployerActiveJobsByUsername = async (req, res) => {
       UserName: req.params.UserName,
     })
     .populate({
-      path : 'Jobs',
-      populate : {
-        path : 'HiredTalent',
+      path: 'Jobs',
+      populate: {
+        path: 'HiredTalent',
         select: 'FirstName LastName Title ImageURL UserName'
       }
     })
@@ -191,7 +192,8 @@ exports.findAllEmployerActiveJobsByUsername = async (req, res) => {
         if (ActiveJobs) {
           res.status(200).send({
             NumberOfActiveJobs: ActiveJobs.length,
-            ActiveJobs})
+            ActiveJobs
+          })
         } else {
           res.status(404).json({
             message: "There's no active jobs for this employer"

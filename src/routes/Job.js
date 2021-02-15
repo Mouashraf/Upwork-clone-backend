@@ -5,13 +5,12 @@ const Authentication = require("../services/Authentication");
 const authorization = require("../services/Authorization");
 
 // get All Jobs
-router.get("/", JobController.getAllJobs);
+router.post("/", JobController.getAllJobs);
 
 // get All Jobs by skill
-router.get("/search/:skill", JobController.searchforJobsBySkill);
+router.post("/:skill", JobController.searchforJobsBySkill);
 
 //Get a job by ID
-
 router.get("/:id", JobController.getAJobById);
 
 //Get all proposals for a job by ID

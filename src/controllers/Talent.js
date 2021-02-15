@@ -162,13 +162,14 @@ exports.findAllTalentJobsByUsername = async (req, res) => {
     .populate('Jobs', 'Status EmployerUserName Name EmployerRating EmployerReview TalentRating TalentReview')
     .exec((err, Talent) => {
       if (Talent) {
-        res.status(200).send(Talent.Jobs);
+        const EndedJobs = Talent.Jobs.filter(job => {
+          return job.Status === "Ongoing"
+        })
+        res.status(200).send(EndedJobs);
       } else res.status(404).json({
         message: "Please be sure you entered an existing talent username"
       });
-    }).sort([
-      ["createdAt", -1]
-    ]);
+    });
 }
 
 //Find all Talent jobs using username "Auth"
