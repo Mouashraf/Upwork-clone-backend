@@ -1,4 +1,5 @@
 var EmployerModel = require("../models/Employer");
+var JobModel = require("../models/Job");
 const authenticateLogin = require("../services/Authentication")
   .authenticateLogin;
 const authenticateAndEncryptPassword = require("../services/Authentication")
@@ -27,7 +28,9 @@ exports.getAllEmployers = (req, resp) => {
         }),
       });
     }
-  }).sort([["createdAt", -1]]);
+  }).sort([
+    ["createdAt", -1]
+  ]);
 };
 
 //Get an employer by username "Auth"
@@ -55,7 +58,9 @@ exports.getAnEmployerByUsername = (req, resp) => {
   EmployerModel.findOne({
       UserName: req.params.UserName
     }, {
-      Country: 1
+      Country: 1,
+      Jobs: 1,
+      createdAt: 1
     },
     (err, data) => {
       if (err || !data) {
@@ -89,8 +94,7 @@ exports.createNewEmployer = (req, resp) => {
             LastName: req.body.LastName,
             Password: hashedPassword,
             ImageURL: req.body.ImageURL ?
-              req.file.path :
-              "https://www.djelfa.info/mobi/img/avatar/avatar.png",
+              req.file.path : "https://www.djelfa.info/mobi/img/avatar/avatar.png",
             Country: req.body.Country,
           },
           (err, employer) => {
@@ -134,15 +138,16 @@ exports.findAllEmployerJobsByUsername = async (req, res) => {
   EmployerModel.findOne({
       UserName: req.params.UserName,
     })
-    .populate("Jobs", "-Proposals -TalentUserName")
+    .populate("Jobs", "-Proposals -HiredTalent")
     .exec((err, EmployerJobs) => {
-      if (err || !EmployerJobs) res.status(404).json({
-        message: "Please be sure you entered an existing employer username" + err
-      });
-      if (!err) {
+      if (err || !EmployerJobs) {
+        res.status(404).json({
+          message: "Please be sure you entered an existing employer username" + err
+        })
+      } else {
         res.status(200).send(EmployerJobs.Jobs);
       }
-    }).sort([["createdAt", -1]]);
+    })
 };
 
 //Find all Employer jobs using username "Auth"
@@ -158,8 +163,46 @@ exports.findAllEmployerJobsByUsernameAuth = async (req, res) => {
       if (!err) {
         res.status(200).send(EmployerJobs.Jobs);
       }
-    }).sort([["createdAt", -1]]);
+    }).sort([
+      ["createdAt", -1]
+    ]);
 };
+
+//Find all Employer active jobs using username
+exports.findAllEmployerActiveJobsByUsername = async (req, res) => {
+  EmployerModel.findOne({
+      UserName: req.params.UserName,
+    })
+    .populate({
+      path: 'Jobs',
+      populate: {
+        path: 'HiredTalent',
+        select: 'FirstName LastName Title ImageURL UserName'
+      }
+    })
+    .exec((err, Employer) => {
+      if (err || !Employer) {
+        res.status(404).json({
+          message: "Please be sure you entered an existing employer username"
+        })
+      } else {
+        const ActiveJobs = Employer.Jobs.filter(job => {
+          return job.Status === "Ongoing"
+        })
+        if (ActiveJobs) {
+          res.status(200).send({
+            NumberOfActiveJobs: ActiveJobs.length,
+            ActiveJobs
+          })
+        } else {
+          res.status(404).json({
+            message: "There's no active jobs for this employer"
+          })
+        }
+      }
+    });
+};
+
 
 //Find by username and remove talent from DB
 exports.findEmployerByUsernameAndRemove = (req, resp) => {

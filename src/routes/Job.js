@@ -5,13 +5,12 @@ const Authentication = require("../services/Authentication");
 const authorization = require("../services/Authorization");
 
 // get All Jobs
-router.get("/", JobController.getAllJobs);
+router.post("/", JobController.getAllJobs);
 
 // get All Jobs by skill
-router.get("/search/:skill", JobController.searchforJobsBySkill);
+router.post("/:skill", JobController.searchforJobsBySkill);
 
 //Get a job by ID
-
 router.get("/:id", JobController.getAJobById);
 
 //Get all proposals for a job by ID
@@ -39,9 +38,18 @@ router.patch("/:UserName/:id", Authentication.checkAuth,
 //Find job and accept a proposal by Employer
 router.patch(
   "/:UserName/:id/:TalentUserName",
+  Authentication.checkAuth,
+  authorization.authorize,
+  JobController.findJobAndAcceptAProposalByEmployer,
+  JobController.findJobByIDAndUpdate
+);
+
+// End Employer job using his username
+router.patch(
+  "/:UserName/:id/:HiredTalentID/end-job",
   // Authentication.checkAuth,
   // authorization.authorize,
-  JobController.findJobAndAcceptAProposalByEmployer,
+  JobController.endEmployerJobByUserName,
   JobController.findJobByIDAndUpdate
 );
 
@@ -52,6 +60,7 @@ router.post(
   authorization.authorize,
   JobController.findJobAndMakeAProposalByTalent
 );
+
 //Find job by username and remove from DB
 router.delete(
   "/:UserName/:id",

@@ -176,13 +176,15 @@ exports.findAllTalentJobsByUsername = async (req, res) => {
     )
     .exec((err, Talent) => {
       if (Talent) {
-        res.status(200).send(Talent.Jobs);
+        const EndedJobs = Talent.Jobs.filter((job) => {
+          return job.Status === "Ongoing";
+        });
+        res.status(200).send(EndedJobs);
       } else
         res.status(404).json({
           message: "Please be sure you entered an existing talent username",
         });
-    })
-    .sort([["createdAt", -1]]);
+    });
 };
 
 //Find all Talent jobs using username "Auth"
@@ -269,7 +271,9 @@ exports.AddToTalentSavedJobsByUsername = (req, resp) => {
 
 //Find all proposals for a talent
 exports.findAllProposalsForAJob = async (req, res, next) => {
-  TalentModel.findOne({ UserName: req.params.UserName })
+  TalentModel.findOne({
+    UserName: req.params.UserName,
+  })
     .populate("Proposals.Job", "-Proposals -__v")
     .exec((err, talent) => {
       if (err || !talent) {
@@ -284,8 +288,7 @@ exports.findAllProposalsForAJob = async (req, res, next) => {
           res.status(200).json(talent.Proposals);
         }
       }
-    })
-    .sort([["createdAt", 1]]);
+    });
 };
 
 //Find a single propose for a job
