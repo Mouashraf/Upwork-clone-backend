@@ -318,10 +318,14 @@ exports.findAllProposalsForAJob = async (req, res, next) => {
       } else {
         if (req.params.proposeID) {
           req.body.Proposals = job.Proposals;
+          req.body.Status = job.Status;
           next()
         } else {
           if (job.EmployerUserName == req.params.UserName) {
-            res.status(200).json(job.Proposals);
+            res.status(200).json({
+              Proposals: job.Proposals,
+              Status: job.Status
+            });
           } else {
             res.status(401).json({
               message: "This job is not belong to you"
@@ -342,7 +346,7 @@ exports.findAProposeForAJob = async (req, res) => {
   });
   if (Propose) {
     if (job.EmployerUserName == req.params.UserName) {
-      res.status(200).send(Propose);
+      res.status(200).send({Propose, Status: req.body.Status});
     } else {
       res.status(401).json({
         message: "This job is not belong to you"
