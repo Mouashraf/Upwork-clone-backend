@@ -190,7 +190,7 @@ exports.findJobAndMakeAProposalByTalent = (req, res) => {
       JobModel.findById(req.params.id, async (err, job) => {
         if (job && req.body.CoverLetter) {
           const isEligible = job.Proposals.find((item) => {
-            return item.TalentID === talent._id;
+            return item.Talent.toString() === talent._id.toString();
           });
           const isEnoughConnects = () => {
             return talent.Connects >= job.ConnectsNeeded;
@@ -249,29 +249,6 @@ exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
             req.body.StartDate = Date.now();
             next();
           }
-          // });
-
-          // JobModel.findById(req.params.id, (err, job) => {
-          //   if (job) {
-          //     if (job.EmployerUserName == req.params.UserName) {
-          //       const isProposed = job.Proposals.find((item) => {
-          //         return item.toString() === talent._id.toString();
-          //       });
-          //       if (isProposed) {
-          //         req.body.TalentUserName = req.params.TalentUserName;
-          //         req.body.Status = "Ongoing"
-          //         next();
-          //       } else {
-          //         res.status(401).json({
-          //           message: "Talent isn't proposed to this job",
-          //         });
-          //       }
-          //     } else {
-          //       res.status(404).json({
-          //         message: "This Job Doesn't belong to this Employer",
-          //       });
-          //     }
-          //   }
           if (err || !job) {
             res.status(404).json({
               message: "Sorry your request can't processed!",
@@ -302,11 +279,11 @@ exports.endEmployerJobByUserName = (req, res, next) => {
           Status: "Ongoing"
         }, (err, job) => {
           if (job) {
-            // const rating = req.body.EmployerRating;
-            // const review = req.body.EmployerReview;
+            const rating = req.body.EmployerRating;
+            const review = req.body.EmployerReview;
             req.body = {}; // clear requst body for secure the next update requst
-            // req.body.EmployerReview = review;
-            // req.body.EmployerRating = rating
+            req.body.EmployerReview = review;
+            req.body.EmployerRating = rating
             req.body.Status = "Done";
             req.body.EndDate = Date.now();
             next();

@@ -68,7 +68,6 @@ const talentSchema = new mongoose.Schema({
 
 	Country: {
 		type: String,
-		enum: ["Egypt", "UK", "US"],
 		default: "Egypt",
 	},
 
@@ -107,6 +106,10 @@ const talentSchema = new mongoose.Schema({
 		CoverLetter: {
 			type: String,
 			required: true
+		},
+		createdAt: {
+			type: Date,
+			default: Date.now()
 		}
 	}]
 }, {

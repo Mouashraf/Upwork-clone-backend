@@ -176,9 +176,9 @@ exports.findAllTalentJobsByUsername = async (req, res) => {
     )
     .exec((err, Talent) => {
       if (Talent) {
-        const EndedJobs = Talent.Jobs.filter((job) => {
-          return job.Status === "Ongoing";
-        });
+        const EndedJobs = Talent.Jobs.filter(job => {
+          return job.Status === "Done"
+        })
         res.status(200).send(EndedJobs);
       } else
         res.status(404).json({
