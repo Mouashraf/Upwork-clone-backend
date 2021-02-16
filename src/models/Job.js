@@ -74,11 +74,9 @@ const jobSchema = new mongoose.Schema({
   EmployerRating: {
     type: Number,
     enum: [0, 1, 2, 3, 4, 5],
-    immutable: true,
   },
   EmployerReview: {
     type: String,
-    immutable: true,
   },
   HiredTalent: {
     type: mongoose.Schema.Types.ObjectId,
@@ -87,11 +85,9 @@ const jobSchema = new mongoose.Schema({
   TalentRating: {
     type: Number,
     enum: [0, 1, 2, 3, 4, 5],
-    immutable: true,
   },
   TalentReview: {
     type: String,
-    immutable: true,
   },
   Proposals: [{
     Talent: {
@@ -102,7 +98,11 @@ const jobSchema = new mongoose.Schema({
     CoverLetter: {
       type: String,
       required: true
-    }
+    },
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		}
   }],
   TotalProposal: {
     type: Number,
@@ -131,7 +131,7 @@ const jobSchema = new mongoose.Schema({
 jobSchema.methods.addToProposals = function (talentID, coverLetter) {
   const updatedProposalsList = [...this.Proposals];
   const newPropose = {
-    TalentID: talentID,
+    Talent: talentID,
     CoverLetter: coverLetter
   }
   updatedProposalsList.push(newPropose);
