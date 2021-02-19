@@ -16,12 +16,12 @@ router.get("/:id", JobController.getAJobById);
 //Get all proposals for a job by ID
 router.get("/:UserName/:id/proposals",
 Authentication.checkAuth,
-authorization.authorize, JobController.findAllProposalsForAJob); // need to authinticate
+authorization.authorize, JobController.findAllProposalsForAJob);
 
 //Get specific propose for a job by ID
 router.get("/:UserName/:id/proposals/:proposeID",
 Authentication.checkAuth,
-authorization.authorize, JobController.findAllProposalsForAJob, JobController.findAProposeForAJob); // need to authinticate
+authorization.authorize, JobController.findAllProposalsForAJob, JobController.findAProposeForAJob);
 
 // create new job and add it to the DB
 router.post(

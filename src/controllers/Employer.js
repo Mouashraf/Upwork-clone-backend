@@ -138,11 +138,11 @@ exports.findAllEmployerJobsByUsername = async (req, res) => {
   EmployerModel.findOne({
       UserName: req.params.UserName,
     })
-    .populate("Jobs", "-Proposals -HiredTalent")
+    .populate("Jobs", "-Proposals")
     .exec((err, EmployerJobs) => {
       if (err || !EmployerJobs) {
         res.status(404).json({
-          message: "Please be sure you entered an existing employer username" + err
+          message: "Please be sure you entered an existing employer username"
         })
       } else {
         res.status(200).send(EmployerJobs.Jobs);
@@ -163,9 +163,7 @@ exports.findAllEmployerJobsByUsernameAuth = async (req, res) => {
       if (!err) {
         res.status(200).send(EmployerJobs.Jobs);
       }
-    }).sort([
-      ["createdAt", -1]
-    ]);
+    });
 };
 
 //Find all Employer active jobs using username
@@ -177,7 +175,7 @@ exports.findAllEmployerActiveJobsByUsername = async (req, res) => {
       path: 'Jobs',
       populate: {
         path: 'HiredTalent',
-        select: 'FirstName LastName Title ImageURL UserName'
+        select: 'FirstName LastName Title ImageURL UserName Email'
       }
     })
     .exec((err, Employer) => {
@@ -187,7 +185,7 @@ exports.findAllEmployerActiveJobsByUsername = async (req, res) => {
         })
       } else {
         const ActiveJobs = Employer.Jobs.filter(job => {
-          return job.Status === "Ongoing"
+          return job.Status === req.params.Status
         })
         if (ActiveJobs) {
           res.status(200).send({

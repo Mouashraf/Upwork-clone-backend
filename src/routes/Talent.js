@@ -60,7 +60,7 @@ router.post(
   TalentController.AddToTalentSavedJobsByUsername
 );
 
-//REmove job from talent's saved collection
+//Remove job from talent's saved collection
 router.delete(
   "/:UserName/:id/save",
   Authentication.checkAuth,

@@ -23,7 +23,7 @@ router.get("/auth/:UserName/jobs", Authentication.checkAuth,
   authorization.authorize, EmployerController.findAllEmployerJobsByUsernameAuth);
 
 //Find Employer jobs by username "Auth"
-router.get("/:UserName/active-jobs", Authentication.checkAuth,
+router.get("/:UserName/:Status", Authentication.checkAuth,
   authorization.authorize, EmployerController.findAllEmployerActiveJobsByUsername);
 
 // create new Employer and add it to the DB

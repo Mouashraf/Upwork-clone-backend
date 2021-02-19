@@ -63,7 +63,7 @@ const talentSchema = new mongoose.Schema({
 
 	ImageURL: {
 		type: String,
-		default: "https://www.djelfa.info/mobi/img/avatar/avatar.png",
+		default: "uploads/avatar.png",
 	},
 
 	Country: {
@@ -111,7 +111,12 @@ const talentSchema = new mongoose.Schema({
 			type: Date,
 			default: Date.now()
 		}
-	}]
+	}],
+	Earnings: {
+		type: Number,
+		default: 0,
+		min: 0
+	}
 }, {
 	timestamps: true,
 });
@@ -188,6 +193,11 @@ talentSchema.methods.addToProposals = function (jobID, coverLetter) {
 
 	return this.save();
 };
+
+talentSchema.method.transferMoney = function (price) {
+	this.Earnings += price
+	return this.save()
+}
 
 // Export the Talents Schema so we can use it whenever we want
 module.exports = mongoose.model("Talent", talentSchema);

@@ -46,42 +46,41 @@ exports.getAllJobs = (req, resp) => {
 exports.searchforJobsBySkill = (req, resp) => {
   const perPage = 10;
   JobModel.find({
-      Skills: {
-        $in: req.params.skill,
+        Skills: {
+          $in: req.params.skill,
+        },
+      }, {
+        __v: 0,
+        Proposals: 0,
+        HiredTalent: 0,
       },
-    },
-    {
-      __v: 0,
-      Proposals: 0,
-      HiredTalent: 0,
-    },
-    (err, data) => {
-      if (err)
-        resp.status(404).json({
-          message: "Can't get the jobs ",
-        });
-      else {
-        const jobsCount = data.length;
-        resp.status(200).send({
-          jobsCount,
-          jobs: data.map((data) => {
-            return {
-              data,
-              request: {
-                type: "GET",
-                url: "http://localhost:5000/job/" + data._id,
-              },
-            };
-          }),
-        });
+      (err, data) => {
+        if (err)
+          resp.status(404).json({
+            message: "Can't get the jobs ",
+          });
+        else {
+          const jobsCount = data.length;
+          resp.status(200).send({
+            jobsCount,
+            jobs: data.map((data) => {
+              return {
+                data,
+                request: {
+                  type: "GET",
+                  url: "http://localhost:5000/job/" + data._id,
+                },
+              };
+            }),
+          });
+        }
       }
-    }
-  )
-  .sort([
-    ["createdAt", -1]
-  ])
-  .limit(perPage)
-  .skip((req.body.PageNumber - 1) * perPage);
+    )
+    .sort([
+      ["createdAt", -1]
+    ])
+    .limit(perPage)
+    .skip((req.body.PageNumber - 1) * perPage);
 };
 
 //Get a job by ID
@@ -89,8 +88,7 @@ exports.searchforJobsBySkill = (req, resp) => {
 //FIX search by Category
 exports.getAJobById = (req, resp) => {
   JobModel.findById(
-    req.params.id,
-    {
+    req.params.id, {
       __v: 0,
       Proposals: 0,
       HiredTalent: 0,
@@ -210,8 +208,7 @@ exports.findJobAndMakeAProposalByTalent = (req, res) => {
         }
         if (err || !job || !req.body.CoverLetter) {
           res.status(404).json({
-            message:
-              "Job ID is not correct or you haven't submitted a cover letter!",
+            message: "Job ID is not correct or you haven't submitted a cover letter!",
           });
         }
       });
@@ -232,29 +229,30 @@ exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
     (err, talent) => {
       if (talent) {
         JobModel.findOne({
-          _id: req.params.id,
-          HiredTalent: {
-            $nin: talent._id.toString()
-          },  
-          EmployerUserName: req.params.UserName,
-          Proposals: talent._id.toString(),
-          Status: "Pending"},
+            _id: req.params.id,
+            HiredTalent: {
+              $nin: talent._id.toString()
+            },
+            EmployerUserName: req.params.UserName,
+            Proposals: talent._id.toString(),
+            Status: "Pending"
+          },
           (err, job) => {
-          if (job) {
-            talent.addToJobs(job);
-            // talent.returnConnects(job.ConnectsNeeded);
-            req.body = {}; // clear requst body for secure the next update requst
-            req.body.HiredTalent = talent._id;
-            req.body.Status = "Ongoing";
-            req.body.StartDate = Date.now();
-            next();
-          }
-          if (err || !job) {
-            res.status(404).json({
-              message: "Sorry your request can't processed!",
-            });
-          }
-        });
+            if (job) {
+              talent.addToJobs(job);
+              // talent.returnConnects(job.ConnectsNeeded);
+              req.body = {}; // clear requst body for secure the next update requst
+              req.body.HiredTalent = talent._id;
+              req.body.Status = "Ongoing";
+              req.body.StartDate = Date.now();
+              next();
+            }
+            if (err || !job) {
+              res.status(404).json({
+                message: "Sorry your request can't processed!",
+              });
+            }
+          });
       }
       if (err || !talent) {
         res.status(404).json({
@@ -279,14 +277,23 @@ exports.endEmployerJobByUserName = (req, res, next) => {
           Status: "Ongoing"
         }, (err, job) => {
           if (job) {
-            const rating = req.body.EmployerRating;
-            const review = req.body.EmployerReview;
-            req.body = {}; // clear requst body for secure the next update requst
-            req.body.EmployerReview = review;
-            req.body.EmployerRating = rating
-            req.body.Status = "Done";
-            req.body.EndDate = Date.now();
-            next();
+            TalentModel.findById(job.HiredTalent, (err, talent) => {
+              if(talent) {
+                talent.transferMoney(job.Price)
+                const rating = req.body.EmployerRating;
+                const review = req.body.EmployerReview;
+                req.body = {}; // clear requst body for secure the next update requst
+                req.body.EmployerReview = review;
+                req.body.EmployerRating = rating
+                req.body.Status = "Done";
+                req.body.EndDate = Date.now();
+                next();
+              } else {
+                res.status(404).json({
+                  message: "Talent is not hired for this job",
+                });
+              }
+            })
           } else {
             res.status(404).json({
               message: "Sorry your request can't processed!",
@@ -305,7 +312,7 @@ exports.endEmployerJobByUserName = (req, res, next) => {
 //Find all proposals for a job
 exports.findAllProposalsForAJob = async (req, res, next) => {
   JobModel.findById(req.params.id)
-    .populate("Proposals.Talent", "FirstName LastName UserName ImageURL Title")
+    .populate("Proposals.Talent", "FirstName LastName UserName ImageURL Title Email")
     .exec((err, job) => {
       if (err || !job) {
         res.status(404).json({

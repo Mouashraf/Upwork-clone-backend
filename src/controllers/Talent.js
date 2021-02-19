@@ -201,7 +201,6 @@ exports.findAllTalentJobsByUsernameAuth = async (req, res) => {
           message: "Please be sure you entered an existing talent username",
         });
     })
-    .sort([["createdAt", -1]]);
 };
 
 //Find by username and remove talent from DB
@@ -362,7 +361,6 @@ exports.findAllTalentSavedJobsByUsername = async (req, res) => {
         });
       }
     })
-    .sort([["createdAt", -1]]);
 };
 
 //Login Authentication for the talent

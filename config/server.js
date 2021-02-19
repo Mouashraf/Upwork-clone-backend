@@ -2,8 +2,11 @@ import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 const cors = require("cors");
+const compression = require('compression')
 
 const server = express();
+
+server.use(compression())
 
 server.use(cors({
   origin: 'http://localhost:4200',
