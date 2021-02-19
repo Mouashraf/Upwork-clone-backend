@@ -1,5 +1,6 @@
 // import Talent Model from our models folder;
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
 const TalentModel = require("../models/Talent");
 const JobModel = require("../models/Job");
 const authenticateLogin = require("../services/Authentication")
@@ -371,11 +372,27 @@ exports.authenticateLogin = (req, resp) => {
 };
 
 //Logout for talents
-exports.logout = (req, resp) => {
+module.exports.logout = (req, resp) => {
   resp.cookie("jwt", "", {
     maxAge: 1,
   });
   resp.status(200).json({
     message: "Logged out successfully",
   });
+};
+
+exports.checkLogged = (req, res, next) => {
+  const token = req.cookies.jwt;
+  try {
+    const decoded = jwt.verify(token, "privateGP");
+    console.log(decoded);
+    res.status(200).json({
+      message: "Logged in",
+    });
+  } catch (error) {
+    res.status(401).json({
+      message: "Not logged in!",
+    });
+    console.log(error);
+  }
 };

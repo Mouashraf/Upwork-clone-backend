@@ -2,116 +2,138 @@
 const mongoose = require("mongoose");
 
 //Using mongoose Shcema constructor to create Talents (Freelancers) Schema
-const talentSchema = new mongoose.Schema({
-	Email: {
-		type: String,
-		unique: true,
-		required: true,
-		// match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
-	},
-	UserName: {
-		type: String,
-		unique: true,
-		required: true,
-	},
-	FirstName: {
-		type: String,
-		required: true,
-	},
-	LastName: {
-		type: String,
-		required: true,
-	},
-	Password: {
-		type: String,
-		required: true,
-		minLength: 6,
-	},
-	isVerified: {
-		type: Boolean,
-		default: false,
-	},
-	MainService: {
-		type: String,
-	},
-	Skills: {
-		type: Array,
-		default: [],
-	},
-	ExpertiseLevel: {
-		type: String,
-		enum: ["Entry", "Intermediate", "Expert"],
-		default: "Entry",
-	},
-	EnglishProficiency: {
-		type: Object,
-		enum: ["Basic", "Conversational", "Fluent", "Native or Bilingual"],
-		default: "Basic"
-	},
-	HourlyRate: {
-		type: Number,
-		default: 10,
-	},
+const talentSchema = new mongoose.Schema(
+  {
+    Email: {
+      type: String,
+      unique: true,
+      required: true,
+      // match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
+    },
+    UserName: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    FirstName: {
+      type: String,
+      required: true,
+    },
+    LastName: {
+      type: String,
+      required: true,
+    },
+    Password: {
+      type: String,
+      required: true,
+      minLength: 6,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    MainService: {
+      type: String,
+    },
+    Skills: {
+      type: Array,
+      default: [],
+    },
+    ExpertiseLevel: {
+      type: String,
+      enum: ["Entry", "Intermediate", "Expert"],
+      default: "Entry",
+    },
+    EnglishProficiency: {
+      type: Object,
+      enum: ["Basic", "Conversational", "Fluent", "Native or Bilingual"],
+      default: "Basic",
+    },
+    HourlyRate: {
+      type: Number,
+      default: 10,
+    },
 
-	Title: {
-		type: String,
-	},
+    Title: {
+      type: String,
+    },
 
-	ProfessionalOverview: {
-		type: String,
-	},
+    ProfessionalOverview: {
+      type: String,
+    },
 
-	ImageURL: {
-		type: String,
-		default: "https://www.djelfa.info/mobi/img/avatar/avatar.png",
-	},
+    ImageURL: {
+      type: String,
+      default: "https://www.djelfa.info/mobi/img/avatar/avatar.png",
+    },
 
-	Country: {
-		type: String,
-		enum: ["Egypt", "UK", "US"],
-		default: "Egypt",
-	},
+    Country: {
+      type: String,
+      enum: ["Egypt", "UK", "US"],
+      default: "Egypt",
+    },
 
-	PhoneNumber: {
-		type: Number,
-		unique: true,
-		sparse: true
-	},
+    PhoneNumber: {
+      type: Number,
+      unique: true,
+      sparse: true,
+    },
 
-	Availability: {
-		type: String,
-		enum: ["Available as needed", "Less Than 30 hrs/week", "More Than 30 hrs/week"],
-		default: "Available as needed"
-	},
-	Jobs: [{
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "Job",
-		required: true,
-	}],
-	SavedJobs: [{
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "Job",
-		required: true,
-	}],
-	Connects: {
-		type: Number,
-		default: 0,
-		min: 0
-	},
-	Proposals: [{
-		Job: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Job",
-			required: true
-		},
-		CoverLetter: {
-			type: String,
-			required: true
-		}
-	}]
-}, {
-	timestamps: true,
-});
+    Availability: {
+      type: String,
+      enum: [
+        "Available as needed",
+        "Less Than 30 hrs/week",
+        "More Than 30 hrs/week",
+      ],
+      default: "Available as needed",
+    },
+    Jobs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Job",
+        required: true,
+      },
+    ],
+    SavedJobs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Job",
+        required: true,
+      },
+    ],
+    Connects: {
+      type: Number,
+      default: 50,
+      min: 0,
+    },
+    Type:{
+      type: String,
+      default: "Talent"
+    },
+
+    Proposals: [
+      {
+        Job: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Job",
+          required: true,
+        },
+        CoverLetter: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now(),
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 // talentSchema.index({PhoneNumber: 1}, {unique: true, sparse: true});
 
 // Add Method into Talent Schema to add new job
@@ -174,16 +196,16 @@ talentSchema.methods.returnConnects = function (connectsNumber) {
 
 // Add Method into talent Schema to add new proposal
 talentSchema.methods.addToProposals = function (jobID, coverLetter) {
-	const updatedProposalsList = [...this.Proposals];
-	const newPropose = {
-		Job: jobID,
-		CoverLetter: coverLetter
-	}
-	updatedProposalsList.push(newPropose);
+  const updatedProposalsList = [...this.Proposals];
+  const newPropose = {
+    Job: jobID,
+    CoverLetter: coverLetter,
+  };
+  updatedProposalsList.push(newPropose);
 
-	this.Proposals = updatedProposalsList;
+  this.Proposals = updatedProposalsList;
 
-	return this.save();
+  return this.save();
 };
 
 // Export the Talents Schema so we can use it whenever we want

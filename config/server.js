@@ -5,10 +5,12 @@ const cors = require("cors");
 
 const server = express();
 
-server.use(cors({
-  origin: 'http://localhost:4200',
-  credentials: true
-}));
+server.use(
+  cors({
+    origin: "http://localhost:4200",
+    credentials: true,
+  })
+);
 
 server.use("/uploads", express.static("uploads"));
 server.use(bodyParser.json());
@@ -17,11 +19,14 @@ server.use(cookieParser());
 const employerRoutes = require("../src/routes/Employer");
 const talentRoutes = require("../src/routes/Talent");
 const jobRoutes = require("../src/routes/Job");
+// const checkLogged = require("../src/routes/CheckLogged");
+const service = require("../src/services/Authentication");
 
 //directs the routes to the required folder
 server.use("/employer", employerRoutes);
 server.use("/talent", talentRoutes);
 server.use("/job", jobRoutes);
+// server.use("/is-logged", checkLogged);
 
 //Error Handling
 server.use((req, res, next) => {

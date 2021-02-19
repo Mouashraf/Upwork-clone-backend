@@ -25,6 +25,10 @@ const employerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Type:{
+    type: String,
+    default: "Employer"
+  },
   isVerified: {
     type: Boolean,
     default: false,
