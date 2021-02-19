@@ -9,36 +9,54 @@ const authorization = require("../services/Authorization");
 // get All Talents
 router.get("/", TalentController.getAllTalents);
 
+router.get("/checklogged/isLogged", TalentController.checkLogged);
+
 //Get a talent by username "Public"
 router.get("/:UserName", TalentController.getATalentByUsername);
 
 //Get a talent by username "Auth"
-router.get("/auth/:UserName",
+router.get(
+  "/auth/:UserName",
   Authentication.checkAuth,
-  authorization.authorize, TalentController.getATalentByUsernameAuth);
+  authorization.authorize,
+  TalentController.getATalentByUsernameAuth
+);
 
 //Get all proposals for a talent by UserName
-router.get("/:UserName/proposals",
+router.get(
+  "/:UserName/proposals",
   Authentication.checkAuth,
-  authorization.authorize, TalentController.findAllProposalsForAJob);
+  authorization.authorize,
+  TalentController.findAllProposalsForAJob
+);
 
 //Get specific propose for a job by ID
-router.get("/:UserName/proposals/:proposeID",
+router.get(
+  "/:UserName/proposals/:proposeID",
   Authentication.checkAuth,
-  authorization.authorize, TalentController.findAllProposalsForAJob, TalentController.findAProposeForAJob);
+  authorization.authorize,
+  TalentController.findAllProposalsForAJob,
+  TalentController.findAProposeForAJob
+);
 
 //Find Talent jobs by username "Public"
 router.get("/:UserName/jobs", TalentController.findAllTalentJobsByUsername);
 
 //Find Talent jobs by username "Auth"
-router.get("/auth/:UserName/jobs",
+router.get(
+  "/auth/:UserName/jobs",
   Authentication.checkAuth,
-  authorization.authorize, TalentController.findAllTalentJobsByUsernameAuth);
+  authorization.authorize,
+  TalentController.findAllTalentJobsByUsernameAuth
+);
 
 //Find Talent saved jobs by username
-router.get("/:UserName/saved-jobs",
+router.get(
+  "/:UserName/saved-jobs",
   Authentication.checkAuth,
-  authorization.authorize, TalentController.findAllTalentSavedJobsByUsername);
+  authorization.authorize,
+  TalentController.findAllTalentSavedJobsByUsername
+);
 
 // signup Talent and add it to the DB
 router.post("/signup", Service.uploadImg, TalentController.createNewTalent);

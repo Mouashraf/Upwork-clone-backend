@@ -20,11 +20,14 @@ server.use(cookieParser());
 const employerRoutes = require("../src/routes/Employer");
 const talentRoutes = require("../src/routes/Talent");
 const jobRoutes = require("../src/routes/Job");
+// const checkLogged = require("../src/routes/CheckLogged");
+const service = require("../src/services/Authentication");
 
 //directs the routes to the required folder
 server.use("/employer", employerRoutes);
 server.use("/talent", talentRoutes);
 server.use("/job", jobRoutes);
+// server.use("/is-logged", checkLogged);
 
 //Error Handling
 server.use((req, res, next) => {
