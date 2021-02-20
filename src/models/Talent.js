@@ -211,7 +211,7 @@ talentSchema.methods.addToProposals = function (jobID, coverLetter) {
   return this.save();
 };
 
-talentSchema.method.transferMoney = function (price) {
+talentSchema.methods.transferMoney = function (price) {
   this.Earnings += price;
   return this.save();
 };
