@@ -234,10 +234,10 @@ exports.findJobAndAcceptAProposalByEmployer = (req, res, next) => {
           {
             _id: req.params.id,
             HiredTalent: {
-              $nin: talent._id.toString(),
+              $nin: talent._id,
             },
             EmployerUserName: req.params.UserName,
-            Proposals: talent._id.toString(),
+            "Proposals.Talent": talent._id,
             Status: "Pending",
           },
           (err, job) => {

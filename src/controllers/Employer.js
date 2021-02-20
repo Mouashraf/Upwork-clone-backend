@@ -93,8 +93,7 @@ exports.createNewEmployer = (req, resp) => {
             FirstName: req.body.FirstName,
             LastName: req.body.LastName,
             Password: hashedPassword,
-            ImageURL: req.body.ImageURL ?
-              req.file.path : "https://www.djelfa.info/mobi/img/avatar/avatar.png",
+            ImageURL: !req.file ? "https://www.djelfa.info/mobi/img/avatar/avatar.png" : req.file.path,
             Country: req.body.Country,
           },
           (err, employer) => {
