@@ -60,13 +60,12 @@ const jobSchema = new mongoose.Schema(
     },
     Duration: {
       type: String,
-      enum: ["Less than one month", "1 to 3 Months", "3 to 6 Months", "More than 6 months"],
+      enum: ["Less than one month", "1 to 3 months", "3 to 6 months", "More than 6 months"],
       default: "Less than one month",
     },
     WeeklyHoursRequired: {
       type: String,
       enum: [
-        // "Available as needed",
         "Less Than 30 hrs/week",
         "More Than 30 hrs/week",
       ],
