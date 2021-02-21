@@ -54,6 +54,7 @@ exports.getATalentByUsername = (req, resp) => {
       isVerified: 0,
       PhoneNumber: 0,
       Jobs: 0,
+      SavedJobs: 0
     },
     (err, data) => {
       if (err || !data) {
@@ -91,8 +92,6 @@ exports.getATalentByUsernameAuth = (req, resp) => {
 
 // create new Talent and add it to the DB
 exports.createNewTalent = (req, resp) => {
-  console.log(req.body.Password);
-
   TalentModel.findOne(
     {
       $or: [
@@ -121,9 +120,9 @@ exports.createNewTalent = (req, resp) => {
             HourlyRate: req.body.HourlyRate,
             Title: req.body.Title,
             ProfessionalOverview: req.body.ProfessionalOverview,
-            ImageURL: !req.file
-              ? "https://www.djelfa.info/mobi/img/avatar/avatar.png"
-              : req.file.path,
+            // ImageURL: !req.file
+            //   ? "https://www.djelfa.info/mobi/img/avatar/avatar.png"
+            //   : req.file.path,
             Country: req.body.Country,
             PhoneNumber: req.body.PhoneNumber,
             Availability: req.body.Availability,
@@ -383,7 +382,6 @@ exports.checkLogged = (req, res, next) => {
   const token = req.cookies.jwt;
   try {
     const decoded = jwt.verify(token, "privateGP");
-    console.log(decoded);
     res.status(200).json({
       message: "Logged in",
     });
@@ -391,6 +389,5 @@ exports.checkLogged = (req, res, next) => {
     res.status(401).json({
       message: "Not logged in!",
     });
-    console.log(error);
   }
 };

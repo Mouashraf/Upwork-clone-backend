@@ -83,7 +83,6 @@ exports.getAnEmployerByUsername = (req, resp) => {
 
 // create new Employer and add it to the DB
 exports.createNewEmployer = (req, resp) => {
-  // console.log(req.body.Email);
   EmployerModel.findOne(
     {
       $or: [
@@ -105,9 +104,9 @@ exports.createNewEmployer = (req, resp) => {
             FirstName: req.body.FirstName,
             LastName: req.body.LastName,
             Password: hashedPassword,
-            ImageURL: !req.file
-              ? "https://www.djelfa.info/mobi/img/avatar/avatar.png"
-              : req.file.path,
+            // ImageURL: !req.file
+            //   ? "https://www.djelfa.info/mobi/img/avatar/avatar.png"
+            //   : req.file.path,
             Country: req.body.Country,
           },
           (err, employer) => {

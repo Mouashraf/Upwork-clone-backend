@@ -42,7 +42,6 @@ const jobSchema = new mongoose.Schema(
     },
     Country: {
       type: String,
-      enum: ["Egypt", "UK", "US", ""],
       default: "",
     },
     EnglishLevel: {
@@ -60,21 +59,18 @@ const jobSchema = new mongoose.Schema(
       required: true,
     },
     Duration: {
-      type: Number,
-
-      // Number refers to min duration for the job, So if employer chooses 1 ==> (1-3) Months, and if he chooses 3 ==> (3-6) Months
-      enum: [0, 1, 3, 6],
-
-      default: 0,
+      type: String,
+      enum: ["Less than one month", "1 to 3 Months", "3 to 6 Months", "More than 6 months"],
+      default: "Less than one month",
     },
     WeeklyHoursRequired: {
       type: String,
       enum: [
-        "Available as needed",
+        // "Available as needed",
         "Less Than 30 hrs/week",
         "More Than 30 hrs/week",
       ],
-      default: "Available as needed",
+      default: "Less Than 30 hrs/week",
     },
     EmployerRating: {
       type: Number,

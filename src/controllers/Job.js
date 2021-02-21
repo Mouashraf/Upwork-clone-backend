@@ -286,7 +286,8 @@ exports.endEmployerJobByUserName = (req, res, next) => {
             if (job) {
               TalentModel.findById(job.HiredTalent, (err, talent) => {
                 if (talent) {
-                  talent.transferMoney(job.Price);
+                  Employer.increaseSpent(job.Price);
+                  talent.receiveMoney(job.Price);
                   const rating = req.body.EmployerRating;
                   const review = req.body.EmployerReview;
                   req.body = {}; // clear requst body for secure the next update requst

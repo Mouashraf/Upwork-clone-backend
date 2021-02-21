@@ -35,7 +35,7 @@ const employerSchema = new mongoose.Schema({
   },
   ImageURL: {
     type: String,
-    default: "https://www.djelfa.info/mobi/img/avatar/avatar.png",
+    default: "uploads/avatar.png",
   },
   Country: {
     type: String,
@@ -47,6 +47,10 @@ const employerSchema = new mongoose.Schema({
     ref: "Job",
     required: true,
   }],
+  Spent: {
+    type: Number,
+    default: 0
+  }
 }, {
 	timestamps: true,
 });
@@ -70,6 +74,12 @@ employerSchema.methods.removeFromJobs = function (jobID) {
 
   this.Jobs = updatedlist;
 
+  return this.save();
+};
+
+// Add Method into Employer Schema to increase spent after end an job
+employerSchema.methods.increaseSpent = function (price) {
+  this.Spent += price;
   return this.save();
 };
 
