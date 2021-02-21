@@ -127,6 +127,7 @@ exports.createNewTalent = (req, resp) => {
             PhoneNumber: req.body.PhoneNumber,
             Availability: req.body.Availability,
             Connects: req.body.Connects,
+            Earnings: req.body.Earnings
           },
           (err, talent) => {
             if (err)

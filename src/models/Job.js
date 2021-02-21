@@ -121,10 +121,10 @@ const jobSchema = new mongoose.Schema(
       default: "Pending",
     },
     StartDate: {
-      type: Date,
+      type: Date
     },
     EndDate: {
-      type: Date,
+      type: Date
     },
   },
   {
