@@ -68,6 +68,7 @@ exports.getAnEmployerByUsername = (req, resp) => {
       Country: 1,
       Jobs: 1,
       createdAt: 1,
+      Spent: 1
     },
     (err, data) => {
       if (err || !data) {

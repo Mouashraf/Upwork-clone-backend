@@ -286,8 +286,10 @@ exports.endEmployerJobByUserName = (req, res, next) => {
             if (job) {
               TalentModel.findById(job.HiredTalent, (err, talent) => {
                 if (talent) {
-                  Employer.increaseSpent(job.Price);
-                  talent.receiveMoney(job.Price);
+                  const factor = 1;
+                  req.body.TotalHours ? factor = req.body.TotalHours : factor = 1;
+                  Employer.increaseSpent(job.Price * factor);
+                  talent.receiveMoney(job.Price * factor);
                   const rating = req.body.EmployerRating;
                   const review = req.body.EmployerReview;
                   req.body = {}; // clear requst body for secure the next update requst

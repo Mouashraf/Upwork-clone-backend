@@ -44,9 +44,9 @@ router.get("/:UserName/jobs", TalentController.findAllTalentJobsByUsername);
 
 //Find Talent jobs by username "Auth"
 router.get(
-  "/auth/:UserName/jobs",
-  Authentication.checkAuth,
-  authorization.authorize,
+  "/auth/:UserName/jobs/:Status",
+  // Authentication.checkAuth,
+  // authorization.authorize,
   TalentController.findAllTalentJobsByUsernameAuth
 );
 

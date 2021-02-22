@@ -195,8 +195,11 @@ exports.findAllTalentJobsByUsernameAuth = async (req, res) => {
   })
     .populate("Jobs", "-Proposals")
     .exec((err, Talent) => {
+      const Jobs = Talent.Jobs.filter(job => {
+        return job.Status === req.params.Status;
+      })
       if (Talent) {
-        res.status(200).send(Talent.Jobs);
+        res.status(200).send(Jobs);
       } else
         res.status(404).json({
           message: "Please be sure you entered an existing talent username",
