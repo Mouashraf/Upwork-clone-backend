@@ -13,8 +13,8 @@ server.use(cors({
   credentials: true
 }));
 
+server.use(express.static("Test"));
 server.use("/uploads", express.static("uploads"));
-server.use("/loaderio-6f68be71525353eb996f0dca14dcf7e6", express.static("loaderio-6f68be71525353eb996f0dca14dcf7e6.html"));
 server.use(bodyParser.json());
 server.use(cookieParser());
 
