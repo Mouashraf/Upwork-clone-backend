@@ -13,7 +13,7 @@ server.use(cors({
   credentials: true
 }));
 
-server.use(express.static("Test"));
+// server.use(express.static("Test"));
 server.use("/uploads", express.static("uploads"));
 server.use(bodyParser.json());
 server.use(cookieParser());
