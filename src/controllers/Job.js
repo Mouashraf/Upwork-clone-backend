@@ -286,7 +286,7 @@ exports.endEmployerJobByUserName = (req, res, next) => {
             if (job) {
               TalentModel.findById(job.HiredTalent, (err, talent) => {
                 if (talent) {
-                  const factor = 1;
+                  let factor = 1;
                   req.body.TotalHours ? factor = req.body.TotalHours : factor = 1;
                   Employer.increaseSpent(job.Price * factor);
                   talent.receiveMoney(job.Price * factor);
