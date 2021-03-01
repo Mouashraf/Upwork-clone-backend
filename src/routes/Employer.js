@@ -22,9 +22,13 @@ router.get("/:UserName/jobs", EmployerController.findAllEmployerJobsByUsername);
 router.get("/auth/:UserName/jobs", Authentication.checkAuth,
   authorization.authorize, EmployerController.findAllEmployerJobsByUsernameAuth);
 
-//Find Employer jobs by username "Auth"
+//Find Employer jobs by his username and job status "Auth"
 router.get("/:UserName/:Status", Authentication.checkAuth,
-  authorization.authorize, EmployerController.findAllEmployerActiveJobsByUsername);
+  authorization.authorize, EmployerController.findAllEmployerJobsByUsernameAndStatus);
+
+//Find Employer finished jobs by his username and job status "Public"
+router.get("/Public/:UserName/:Status", EmployerController.findAllEmployerFinishedJobsByUsernameAndStatus,
+  EmployerController.findAllEmployerJobsByUsernameAndStatus);
 
 // create new Employer and add it to the DB
 router.post("/signup", Service.uploadImg, EmployerController.createNewEmployer);

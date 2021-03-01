@@ -7,9 +7,7 @@ const authenticateAndEncryptPassword = require("../services/Authentication")
 
 // get All Employers
 exports.getAllEmployers = (req, resp) => {
-  EmployerModel.find(
-    {},
-    {
+  EmployerModel.find({}, {
       __v: 0,
     },
     (err, data) => {
@@ -33,16 +31,16 @@ exports.getAllEmployers = (req, resp) => {
         });
       }
     }
-  ).sort([["createdAt", -1]]);
+  ).sort([
+    ["createdAt", -1]
+  ]);
 };
 
 //Get an employer by username "Auth"
 exports.getAnEmployerByUsernameAuth = (req, resp) => {
-  EmployerModel.findOne(
-    {
+  EmployerModel.findOne({
       UserName: req.params.UserName,
-    },
-    {
+    }, {
       __v: 0,
       Password: 0,
     },
@@ -60,11 +58,9 @@ exports.getAnEmployerByUsernameAuth = (req, resp) => {
 
 //Get an employer by username "Public"
 exports.getAnEmployerByUsername = (req, resp) => {
-  EmployerModel.findOne(
-    {
+  EmployerModel.findOne({
       UserName: req.params.UserName,
-    },
-    {
+    }, {
       Country: 1,
       Jobs: 1,
       createdAt: 1,
@@ -84,10 +80,8 @@ exports.getAnEmployerByUsername = (req, resp) => {
 
 // create new Employer and add it to the DB
 exports.createNewEmployer = (req, resp) => {
-  EmployerModel.findOne(
-    {
-      $or: [
-        {
+  EmployerModel.findOne({
+      $or: [{
           Email: req.body.Email,
         },
         {
@@ -98,8 +92,7 @@ exports.createNewEmployer = (req, resp) => {
     (err, user) => {
       const hashedPassword = authenticateAndEncryptPassword(user, req, resp);
       if (typeof hashedPassword == "string") {
-        EmployerModel.create(
-          {
+        EmployerModel.create({
             Email: req.body.Email,
             UserName: req.body.UserName,
             FirstName: req.body.FirstName,
@@ -127,11 +120,9 @@ exports.createNewEmployer = (req, resp) => {
 
 //Edit an Employer using username
 exports.findEmployerByUsernameAndUpdate = (req, resp) => {
-  EmployerModel.findOneAndUpdate(
-    {
+  EmployerModel.findOneAndUpdate({
       UserName: req.params.UserName,
-    },
-    {
+    }, {
       $set: req.body,
     },
     (err, job) => {
@@ -149,8 +140,8 @@ exports.findEmployerByUsernameAndUpdate = (req, resp) => {
 //Find all Employer jobs using username "Public"
 exports.findAllEmployerJobsByUsername = async (req, res) => {
   EmployerModel.findOne({
-    UserName: req.params.UserName,
-  })
+      UserName: req.params.UserName,
+    })
     .populate("Jobs", "-Proposals")
     .exec((err, EmployerJobs) => {
       if (err || !EmployerJobs) {
@@ -166,14 +157,13 @@ exports.findAllEmployerJobsByUsername = async (req, res) => {
 //Find all Employer jobs using username "Auth"
 exports.findAllEmployerJobsByUsernameAuth = async (req, res) => {
   EmployerModel.findOne({
-    UserName: req.params.UserName,
-  })
+      UserName: req.params.UserName,
+    })
     .populate("Jobs")
     .exec((err, EmployerJobs) => {
       if (err || !EmployerJobs)
         res.status(404).json({
-          message:
-            "Please be sure you entered an existing employer username" + err,
+          message: "Please be sure you entered an existing employer username" + err,
         });
       if (!err) {
         res.status(200).send(EmployerJobs.Jobs);
@@ -182,10 +172,16 @@ exports.findAllEmployerJobsByUsernameAuth = async (req, res) => {
 };
 
 //Find all Employer active jobs using username
-exports.findAllEmployerActiveJobsByUsername = async (req, res) => {
+exports.findAllEmployerFinishedJobsByUsernameAndStatus = async (req, res, next) => {
+  req.params.Status === "Done";
+  next();
+}
+
+//Find all Employer jobs using username and job status
+exports.findAllEmployerJobsByUsernameAndStatus = async (req, res) => {
   EmployerModel.findOne({
-    UserName: req.params.UserName,
-  })
+      UserName: req.params.UserName,
+    })
     .populate({
       path: "Jobs",
       populate: {
@@ -218,11 +214,9 @@ exports.findAllEmployerActiveJobsByUsername = async (req, res) => {
 
 //Find by username and remove talent from DB
 exports.findEmployerByUsernameAndRemove = (req, resp) => {
-  EmployerModel.findOneAndDelete(
-    {
+  EmployerModel.findOneAndDelete({
       UserName: req.params.UserName,
-    },
-    {
+    }, {
       useFindAndModify: false,
     },
     (err, data) => {
